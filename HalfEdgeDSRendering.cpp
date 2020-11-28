@@ -13,6 +13,11 @@ void renderDS(const HalfEdgeDS& heDS)
 void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 {
 	// TODO: render the edge with the given color
+	glBegin(GL_LINES);
+	glColor3fv(&color.x);
+	glVertex3fv(&e->he1->startV->coordinates.x);
+	glVertex3fv(&e->he2->startV->coordinates.x);
+	glEnd(); 
 }
 
 void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
@@ -23,6 +28,10 @@ void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)
 void renderV(const Vertex* v, const Vec3f& color /*= Vec3f(1.0f, 0.0f, 1.0f)*/)
 {
 	// TODO: render the vertex with the given color
+	glBegin(GL_POINTS);
+	glColor3fv(&color.x);
+	glVertex3fv(&v->coordinates.x);
+	glEnd();
 }
 
 
