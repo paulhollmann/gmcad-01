@@ -59,6 +59,9 @@ public:
 	friend std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds);
 
 	// TODO: Extend the interface of the this data structure by implementing at least four euler operators
+	void mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, float x1, float y1, float z1, float x2, float y2, float z2);
+
+	void mev(Loop L1, Vertex V1, Edge& E1, Vertex& V2, float x, float y, float z);
 
 	// TODO: Check if the data structure is correct using the Euler-Poincare formula
 
