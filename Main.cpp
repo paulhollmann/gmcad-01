@@ -1,4 +1,4 @@
-#include "main.h"		// this header
+#include "Main.h"		// this header
 
 #include <stdlib.h>		// standard library
 #include <math.h>		// fmod
