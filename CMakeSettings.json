@@ -1,7 +1,7 @@
 ﻿{
   "configurations": [
     {
-      "name": "x64-Debug (Standard)",
+      "name": "x64-Debug (GEOMETH)",
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [ "msvc_x64_x64" ],
@@ -30,7 +30,7 @@
       "cmakeExecutable": ""
     },
     {
-      "name": "x86-Debug (Standard)",
+      "name": "x86-Debug (GEOMETH)",
       "generator": "Ninja",
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
