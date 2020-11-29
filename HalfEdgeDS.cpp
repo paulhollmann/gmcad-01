@@ -90,6 +90,11 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 	he2->toEdge = &E1;
 	he1->startV = &V1;
 	he2->startV = &V2;
+	he1->prevHE = he2;
+	he2->prevHE = he1;
+	he1->nextHE = he2;
+	he2->nextHE = he1;
+	
 
 	E1.he1 = he1;
 	E1.he2 = he2;
