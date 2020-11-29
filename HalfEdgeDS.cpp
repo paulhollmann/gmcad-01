@@ -43,12 +43,20 @@ void HalfEdgeDS::createDefaultObject()
 	edges.push_back(e);
 	*/
 	Edge* e1 = new Edge();
+	Edge* e2 = new Edge();
 	Vertex* v1 = new Vertex();
 	Vertex* v2 = new Vertex();
+	Vertex* v3 = new Vertex();
+	//Vertex* v4 = new Vertex();
 	Loop* l1 = new Loop();
+	//Loop* l2 = new Loop();
 	Solid* s1 = new Solid();
+	//Solid* s2 = new Solid();
 
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
+	mev(*l1,*v1,*e2,*v3, -1.0f, 2.0f, 0);
+	
+	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
 }
 
@@ -121,8 +129,44 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 
 }
 
-void HalfEdgeDS::mev(Loop L1, Vertex V1, Edge& E1, Vertex& V2, float x, float y, float z)
+void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float y, float z)
 {
+	Vec3f p(x, y, z);
+
+	HalfEdge* he1 = new HalfEdge();
+	HalfEdge* he2 = new HalfEdge();
+
+	V2.coordinates = p;
+	V2.outgoingHE = he2;
+
+	HalfEdge* inbound_he = L1.toHE;
+	while (inbound_he->startV != &V1)
+	{
+		inbound_he = inbound_he->nextHE;
+	}
+	inbound_he = inbound_he->prevHE;
+	HalfEdge* outbound_he = inbound_he->nextHE;
+	inbound_he->nextHE = he1;
+	he1->prevHE = inbound_he;
+	he1->nextHE = he2;
+	he2->prevHE = he1;
+	he2->nextHE = outbound_he;
+	outbound_he->nextHE = he2;
+
+	he1->startV = &V1;
+	he2->startV = &V2;
+	he1->toLoop = &L1;
+	he2->toLoop = &L1;
+	he1->toEdge = &E1;
+	he2->toEdge = &E1;
+
+	E1.he1 = he1;
+	E1.he2 = he2;
+
+	vertices.push_back(&V2);
+	halfEdges.push_back(he1);
+	halfEdges.push_back(he2);
+	edges.push_back(&E1);
 }
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)
