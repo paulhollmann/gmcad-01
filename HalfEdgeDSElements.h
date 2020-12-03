@@ -70,6 +70,7 @@ struct HalfEdge
 	HalfEdge* prevHE;		// previous half edge
 	Vertex* startV;			// vertex at the tail of the half edge
 	HalfEdge();
+	HalfEdge* getConjugate();
 	
 	// TODO: create methods for creating and traversing its elements
 };
@@ -81,6 +82,9 @@ struct Vertex
 	Vertex();
 	
 	// TODO: create methods for creating and traversing its elements
+	
+	//std::list<Edge*> getEdges();
+
 };
 
 

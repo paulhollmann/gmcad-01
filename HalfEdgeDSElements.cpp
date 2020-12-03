@@ -49,6 +49,14 @@ HalfEdge::HalfEdge()
 	, startV(nullptr)
 {
 }
+
+HalfEdge* HalfEdge::getConjugate()
+{
+	if (this->toEdge->he1 == this) {
+		return this->toEdge->he2;
+	}
+	return this->toEdge->he1;
+}
 	
 // TODO: create methods for creating and traversing its elements
 

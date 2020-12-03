@@ -23,6 +23,20 @@ void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 {
 	// TODO: render the half-edge with the given color
+	glBegin(GL_LINES);
+	glColor3fv(&color.x);
+	glVertex3fv(&he->startV->coordinates.x);
+	Edge* e = he->toEdge;
+	if (e->he1->startV == he->startV)
+	{
+		glVertex3fv(&e->he2->startV->coordinates.x);
+	}
+	else
+	{
+		glVertex3fv(&e->he1->startV->coordinates.x);
+	}
+
+	glEnd();
 }
 
 void renderV(const Vertex* v, const Vec3f& color /*= Vec3f(1.0f, 0.0f, 1.0f)*/)
