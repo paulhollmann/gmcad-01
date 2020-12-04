@@ -63,6 +63,8 @@ public:
 
 	void mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float y, float z);
 
+	void mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z);
+
 	// TODO: Check if the data structure is correct using the Euler-Poincare formula
 
 private:

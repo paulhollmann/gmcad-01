@@ -44,10 +44,11 @@ void HalfEdgeDS::createDefaultObject()
 	*/
 	Edge* e1 = new Edge();
 	Edge* e2 = new Edge();
+	Edge* e3 = new Edge();
 	Vertex* v1 = new Vertex();
 	Vertex* v2 = new Vertex();
 	Vertex* v3 = new Vertex();
-	//Vertex* v4 = new Vertex();
+	Vertex* v4 = new Vertex();
 	Loop* l1 = new Loop();
 	//Loop* l2 = new Loop();
 	Solid* s1 = new Solid();
@@ -55,6 +56,9 @@ void HalfEdgeDS::createDefaultObject()
 
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
 	mev(*l1,*v1,*e2,*v3, -1.0f, 2.0f, 0);
+
+	mve(*e1, *v4, *e3, 1.0f, 1.0f, 1.0f);
+
 	
 	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
@@ -139,12 +143,7 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	V2.coordinates = p;
 	V2.outgoingHE = he2;
 
-	HalfEdge* inbound_he = L1.toHE;
-	while (inbound_he->startV != &V1)
-	{
-		inbound_he = inbound_he->nextHE;
-	}
-	inbound_he = inbound_he->prevHE;
+	HalfEdge* inbound_he = V1.getInboundHE(L1);
 	HalfEdge* outbound_he = inbound_he->nextHE;
 	inbound_he->nextHE = he1;
 	he1->prevHE = inbound_he;
@@ -167,6 +166,50 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
 	edges.push_back(&E1);
+}
+
+void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) {
+
+	Vec3f p(x, y, z);
+	HalfEdge* rightHE1 = new HalfEdge();
+	HalfEdge* rightHE2 = new HalfEdge();
+
+	V1.coordinates = p;
+	V1.outgoingHE = rightHE1;
+
+	Vertex* leftV = E1.he1->startV;
+	Vertex* rightV = E1.he2->startV;
+	HalfEdge* leftHE1 = E1.he1;
+	HalfEdge* leftHE2 = E1.he2;
+
+
+
+
+	rightHE1->nextHE = leftHE1->nextHE;
+	leftHE1->nextHE->prevHE = rightHE1;
+	rightHE2->prevHE = leftHE2->prevHE;
+	leftHE2->prevHE->nextHE = rightHE2;
+
+	rightHE1->prevHE = leftHE1;
+	rightHE2->nextHE = leftHE2;
+
+	rightHE1->startV = &V1;
+	rightHE2->startV = rightV;
+
+	leftHE1->nextHE = rightHE1;
+	leftHE2->prevHE = rightHE2;
+	leftHE2->startV = &V1;
+
+	leftV->outgoingHE = leftHE1;
+	rightV->outgoingHE = rightHE2;
+
+	E2.he1 = rightHE1;
+	E2.he2 = rightHE2;
+
+	vertices.push_back(&V1);
+	halfEdges.push_back(rightHE1);
+	halfEdges.push_back(rightHE2);
+	edges.push_back(&E2);
 }
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)

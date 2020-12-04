@@ -50,6 +50,7 @@ HalfEdge::HalfEdge()
 {
 }
 
+// TODO: create methods for creating and traversing its elements
 HalfEdge* HalfEdge::getConjugate()
 {
 	if (this->toEdge->he1 == this) {
@@ -58,7 +59,7 @@ HalfEdge* HalfEdge::getConjugate()
 	return this->toEdge->he1;
 }
 	
-// TODO: create methods for creating and traversing its elements
+
 
 
 Vertex::Vertex()
@@ -68,3 +69,11 @@ Vertex::Vertex()
 }
 	
 // TODO: create methods for creating and traversing its elements
+HalfEdge* Vertex::getInboundHE(Loop &loop) {
+	HalfEdge* he = loop.toHE;
+	while (he->startV != this)
+	{
+		he = he->nextHE;
+	}
+	return he->prevHE;
+}

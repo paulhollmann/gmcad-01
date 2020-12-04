@@ -49,8 +49,10 @@ struct Loop
 	Loop* prevLoop;			// previous inner loop. cyclic: points to itself, if there is no other loop.
 	HalfEdge* toHE;			// can be any half edge of the loop
 	Loop();
-	
 	// TODO: create methods for creating and traversing its elements
+	//std::list<Edge*> getEdges();
+	//std::list<Vertex*> getVertcies();
+
 };
 
 struct Edge
@@ -70,9 +72,8 @@ struct HalfEdge
 	HalfEdge* prevHE;		// previous half edge
 	Vertex* startV;			// vertex at the tail of the half edge
 	HalfEdge();
-	HalfEdge* getConjugate();
-	
 	// TODO: create methods for creating and traversing its elements
+	HalfEdge* getConjugate();
 };
 
 struct Vertex
@@ -80,11 +81,10 @@ struct Vertex
 	HalfEdge* outgoingHE;	// can be any outgoing half edge
 	Vec3f coordinates;		// stores the 3d coordinates of the vertex
 	Vertex();
-	
 	// TODO: create methods for creating and traversing its elements
-	
-	//std::list<Edge*> getEdges();
+	HalfEdge* getInboundHE(Loop& loop);
 
+	//std::list<Edge*> getEdges();
 };
 
 
