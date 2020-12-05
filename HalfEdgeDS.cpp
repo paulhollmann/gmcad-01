@@ -244,9 +244,14 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 	{
 		he2->toLoop = &L2;
 		he2 = he2->nextHE;
+		he->toLoop = &L2;
+		he = he->nextHE;
 	}
 	he1->startV = &V1;
 	he2->startV = &V2;
+
+	he1->toEdge = &E1;
+	he2->toEdge = &E1;
 
 	E1.he1 = he1;
 	E1.he2 = he2;
