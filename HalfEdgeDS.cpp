@@ -151,6 +151,7 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	he2->prevHE = he1;
 	he2->nextHE = outbound_he;
 	outbound_he->nextHE = he2;
+	outbound_he->prevHE = he2;
 
 	he1->startV = &V1;
 	he2->startV = &V2;
