@@ -53,6 +53,8 @@ void renderHEActive(const HalfEdge* he)
 {
 	// TODO: render the currently selected half-edge.
 	// use renderArrow method to visualize the direction of the half-edge
+	if (he == nullptr) return;
+	renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.1f);
 }
 
 void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)

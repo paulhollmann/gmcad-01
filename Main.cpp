@@ -30,8 +30,6 @@ int main(int argc, char** argv)
 	initializeGL();
 	// data structure stuff
 	std::cout << heDS << std::endl << std::endl;
-	if (heDS.getHalfEdges().size() > 0) activeHE = heDS.getHalfEdges().front();
-	else activeHE = nullptr;
 	// activate main loop
 	glutMainLoop();
 	return 0;
@@ -168,9 +166,30 @@ void keyPressed(unsigned char key, int x, int y)
 
 	// TODO: Provide a navigation functionality to traverse the data structure via the half-edges (next, previous, opposite, loop-switch) using the keyboard.
 	// Note: To highlight the active half-edge just set the variable 'activeHE' which will already be rendered using the 'renderHEActive' method!
+	case 'n':
+		selectNextHE();
+		break;
 	}		
 
 }
+
+void selectNextHE() {
+	if (heDS.getHalfEdges().size() == 0)
+	{
+		activeHE = nullptr;
+	}
+	else if (activeHE == nullptr)
+	{
+		activeHE = heDS.getHalfEdges().front();
+	}
+	else 
+	{
+		activeHE = activeHE->nextHE;
+	}
+	std::cout << "activeHE=" << activeHE << std::endl;
+	glutPostRedisplay();
+}
+
 
 void mousePressed(int button, int state, int x, int y)
 {

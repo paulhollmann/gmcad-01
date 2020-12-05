@@ -65,4 +65,6 @@ void mouseMoved(int x, int y);
 // === VARIOUS ===
 // ===============
 
+void selectNextHE();
+
 void coutHelp();

@@ -69,8 +69,8 @@ Vertex::Vertex()
 }
 	
 // TODO: create methods for creating and traversing its elements
-HalfEdge* Vertex::getInboundHE(Loop &loop) {
-	HalfEdge* he = loop.toHE;
+HalfEdge* Vertex::getInboundHE(Loop *loop) {
+	HalfEdge* he = loop->toHE;
 	while (he->startV != this)
 	{
 		he = he->nextHE;

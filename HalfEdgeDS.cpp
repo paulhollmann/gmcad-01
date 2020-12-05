@@ -144,6 +144,7 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	V2.outgoingHE = he2;
 
 	HalfEdge* inbound_he = V1.getInboundHE(L1);
+	HalfEdge* inbound_he = V1.getInboundHE(&L1);
 	HalfEdge* outbound_he = inbound_he->nextHE;
 	inbound_he->nextHE = he1;
 	he1->prevHE = inbound_he;
