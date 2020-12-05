@@ -67,4 +67,6 @@ void mouseMoved(int x, int y);
 
 void selectNextHE();
 
+void selectConjugateHE();
+
 void coutHelp();

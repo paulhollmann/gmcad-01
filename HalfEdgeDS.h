@@ -71,6 +71,11 @@ public:
 
 private:
 
+	bool checkVertices();
+	bool checkHalfEdges();
+	bool checkEdges();
+	bool checkLoops();
+
 };
 
 // ostream << operator to print some info of the data structure

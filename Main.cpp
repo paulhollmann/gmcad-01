@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(300, 200);
 	glutInitWindowSize(600, 400);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutCreateWindow("TU Darmstadt, MBorner"); 
+	glutCreateWindow("TU Darmstadt, GMCAD"); 
 	// link functions to certain openGL events
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(reshape);  
@@ -169,8 +169,10 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'n':
 		selectNextHE();
 		break;
-	}		
-
+	case 'c':
+		selectConjugateHE();
+		break;
+	}
 }
 
 void selectNextHE() {
@@ -185,6 +187,23 @@ void selectNextHE() {
 	else 
 	{
 		activeHE = activeHE->nextHE;
+	}
+	std::cout << "activeHE=" << activeHE << std::endl;
+	glutPostRedisplay();
+}
+
+void selectConjugateHE() {
+	if (heDS.getHalfEdges().size() == 0)
+	{
+		activeHE = nullptr;
+	}
+	else if (activeHE == nullptr)
+	{
+		activeHE = heDS.getHalfEdges().front();
+	}
+	else
+	{
+		activeHE = activeHE->getConjugate();
 	}
 	std::cout << "activeHE=" << activeHE << std::endl;
 	glutPostRedisplay();

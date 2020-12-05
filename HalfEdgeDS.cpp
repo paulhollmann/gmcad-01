@@ -59,7 +59,7 @@ void HalfEdgeDS::createDefaultObject()
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
 	mev(*l1,*v2,*e2,*v3, -1.0f, 2.0f, 0);
 	mve(*e2, *v4, *e3, 1.0f, 1.0f, 1.0f);
-	mel(*l1, *v1, *v2, *e4, *l2);
+	mel(*l1, *v1, *v3, *e4, *l2);
 
 	
 	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
@@ -242,8 +242,6 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 	HalfEdge* he = he2->nextHE;
 	while (he != he2)
 	{
-		he2->toLoop = &L2;
-		he2 = he2->nextHE;
 		he->toLoop = &L2;
 		he = he->nextHE;
 	}
@@ -267,6 +265,48 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 	loops.push_back(&L2);
 }
 
+bool HalfEdgeDS::checkVertices()
+{
+	for (Vertex* v : vertices) 
+	{
+		if (v->outgoingHE != nullptr) return false;
+	}
+	return true;
+}
+
+bool HalfEdgeDS::checkHalfEdges()
+{
+	for (HalfEdge* he : halfEdges)
+	{
+		if (he->startV != nullptr) return false;
+		if (he->nextHE != nullptr) return false;
+		if (he->prevHE != nullptr) return false;
+		if (he->toEdge != nullptr) return false;
+		if (he->toLoop != nullptr) return false;
+		if (he->getConjugate() != nullptr) return false;
+	}
+	return true;
+}
+
+bool HalfEdgeDS::checkEdges()
+{
+	for (Edge* e : edges)
+	{
+		if (e->he1 != nullptr) return false;
+		if (e->he2 != nullptr) return false;
+	}
+	return true;
+}
+
+bool HalfEdgeDS::checkLoops()
+{
+	for (Loop* l : loops)
+	{
+		if (l->toHE != nullptr) return false;
+		//check loop integrity
+	}
+	return true;
+}
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)
 {
