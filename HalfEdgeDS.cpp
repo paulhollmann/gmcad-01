@@ -203,6 +203,11 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	leftV->outgoingHE = leftHE1;
 	rightV->outgoingHE = rightHE2;
 
+	rightHE1->toEdge = &E2;
+	rightHE2->toEdge = &E2;
+	rightHE1->toLoop = leftHE1->toLoop;
+	rightHE2->toLoop = leftHE2->toLoop;
+
 	E2.he1 = rightHE1;
 	E2.he2 = rightHE2;
 
