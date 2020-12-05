@@ -61,9 +61,12 @@ void HalfEdgeDS::createDefaultObject()
 	mve(*e2, *v4, *e3, 1.0f, 1.0f, 1.0f);
 	mel(*l1, *v1, *v3, *e4, *l2);
 
+
+	if (!checkDS()) std::cout << "WARN: HalfEdgeDS NOT valid! (blame the programmer)" << std::endl;
 	
 	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
+
 }
 
 void HalfEdgeDS::clearDS()
@@ -265,11 +268,21 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 	loops.push_back(&L2);
 }
 
+bool HalfEdgeDS::checkDS() 
+{
+	return checkVertices() && checkHalfEdges() && checkEdges() && checkLoops();
+}
+
+bool HalfEdgeDS::checkEulerPoincare()
+{
+	return false;
+}
+
 bool HalfEdgeDS::checkVertices()
 {
 	for (Vertex* v : vertices) 
 	{
-		if (v->outgoingHE != nullptr) return false;
+		if (v->outgoingHE == nullptr) return false;
 	}
 	return true;
 }
@@ -278,12 +291,14 @@ bool HalfEdgeDS::checkHalfEdges()
 {
 	for (HalfEdge* he : halfEdges)
 	{
-		if (he->startV != nullptr) return false;
-		if (he->nextHE != nullptr) return false;
-		if (he->prevHE != nullptr) return false;
-		if (he->toEdge != nullptr) return false;
-		if (he->toLoop != nullptr) return false;
-		if (he->getConjugate() != nullptr) return false;
+		if (he->startV == nullptr) return false;
+		if (he->nextHE == nullptr) return false;
+		if (he->prevHE == nullptr) return false;
+		if (he->toEdge == nullptr) return false;
+		if (he->toLoop == nullptr) return false;
+		if (he->prevHE->nextHE != he) return false;
+		if (he->nextHE->prevHE != he) return false;
+		if (he->getConjugate() == nullptr) return false;
 	}
 	return true;
 }
@@ -292,8 +307,8 @@ bool HalfEdgeDS::checkEdges()
 {
 	for (Edge* e : edges)
 	{
-		if (e->he1 != nullptr) return false;
-		if (e->he2 != nullptr) return false;
+		if (e->he1 == nullptr) return false;
+		if (e->he2 == nullptr) return false;
 	}
 	return true;
 }
@@ -302,8 +317,13 @@ bool HalfEdgeDS::checkLoops()
 {
 	for (Loop* l : loops)
 	{
-		if (l->toHE != nullptr) return false;
-		//check loop integrity
+		if (l->toHE == nullptr) return false;
+		HalfEdge* he = l->toHE;
+		do 
+		{
+			he = he->nextHE;
+		} 
+		while (he != l->toHE);
 	}
 	return true;
 }

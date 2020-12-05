@@ -67,7 +67,11 @@ public:
 
 	void mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2);
 
+	bool checkDS();
+
 	// TODO: Check if the data structure is correct using the Euler-Poincare formula
+
+	bool checkEulerPoincare();
 
 private:
 
