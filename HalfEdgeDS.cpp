@@ -45,19 +45,21 @@ void HalfEdgeDS::createDefaultObject()
 	Edge* e1 = new Edge();
 	Edge* e2 = new Edge();
 	Edge* e3 = new Edge();
+	Edge* e4 = new Edge();
+
 	Vertex* v1 = new Vertex();
 	Vertex* v2 = new Vertex();
 	Vertex* v3 = new Vertex();
 	Vertex* v4 = new Vertex();
 	Loop* l1 = new Loop();
-	//Loop* l2 = new Loop();
+	Loop* l2 = new Loop();
 	Solid* s1 = new Solid();
 	//Solid* s2 = new Solid();
 
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
-	mev(*l1,*v1,*e2,*v3, -1.0f, 2.0f, 0);
-
-	mve(*e1, *v4, *e3, 1.0f, 1.0f, 1.0f);
+	mev(*l1,*v2,*e2,*v3, -1.0f, 2.0f, 0);
+	mve(*e2, *v4, *e3, 1.0f, 1.0f, 1.0f);
+	mel(*l1, *v1, *v2, *e4, *l2);
 
 	
 	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
@@ -143,7 +145,6 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	V2.coordinates = p;
 	V2.outgoingHE = he2;
 
-	HalfEdge* inbound_he = V1.getInboundHE(L1);
 	HalfEdge* inbound_he = V1.getInboundHE(&L1);
 	HalfEdge* outbound_he = inbound_he->nextHE;
 	inbound_he->nextHE = he1;
@@ -151,7 +152,6 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	he1->nextHE = he2;
 	he2->prevHE = he1;
 	he2->nextHE = outbound_he;
-	outbound_he->nextHE = he2;
 	outbound_he->prevHE = he2;
 
 	he1->startV = &V1;
@@ -184,9 +184,6 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	HalfEdge* leftHE1 = E1.he1;
 	HalfEdge* leftHE2 = E1.he2;
 
-
-
-
 	rightHE1->nextHE = leftHE1->nextHE;
 	leftHE1->nextHE->prevHE = rightHE1;
 	rightHE2->prevHE = leftHE2->prevHE;
@@ -218,6 +215,53 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	halfEdges.push_back(rightHE2);
 	edges.push_back(&E2);
 }
+
+void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
+
+	HalfEdge* he1 = new HalfEdge();
+	HalfEdge* he2 = new HalfEdge();
+
+	HalfEdge* leftInboundHE = V1.getInboundHE(&L1);
+	HalfEdge* leftOutboundHE = leftInboundHE->getConjugate();
+	
+	HalfEdge* rightInboundHE = V2.getInboundHE(&L1);
+	HalfEdge* rightOutboundHE = rightInboundHE->getConjugate();
+
+	leftInboundHE->nextHE = he1;
+	he1->prevHE = leftInboundHE;
+	he1->nextHE = rightOutboundHE;
+	rightOutboundHE->prevHE = he1;
+
+	rightInboundHE->nextHE = he2;
+	he2->prevHE = rightInboundHE;
+	he2->nextHE = leftOutboundHE;
+	leftOutboundHE->prevHE = he1;
+
+	he1->toLoop = &L1;
+	he2->toLoop = &L2;
+	HalfEdge* he = he2->nextHE;
+	while (he != he2)
+	{
+		he2->toLoop = &L2;
+		he2 = he2->nextHE;
+	}
+	he1->startV = &V1;
+	he2->startV = &V2;
+
+	E1.he1 = he1;
+	E1.he2 = he2;
+	
+	L1.toHE = he1;
+	L2.toHE = he2;
+
+	//handle faces
+
+	halfEdges.push_back(he1);
+	halfEdges.push_back(he2);
+	edges.push_back(&E1);
+	loops.push_back(&L2);
+}
+
 
 std::ostream& operator<< (std::ostream& os, HalfEdgeDS& ds)
 {
