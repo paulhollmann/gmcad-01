@@ -51,7 +51,7 @@ struct Loop
 	Loop();
 	// TODO: create methods for creating and traversing its elements
 	//std::list<Edge*> getEdges();
-	//std::list<Vertex*> getVertcies();
+	//std::list<Vertex*> getVertices();
 
 };
 
