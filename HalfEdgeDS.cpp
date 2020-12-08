@@ -42,29 +42,35 @@ void HalfEdgeDS::createDefaultObject()
 	halfEdges.push_back(he2);
 	edges.push_back(e);
 	*/
+	/// Create Edges for test element
 	Edge* e1 = new Edge();
 	Edge* e2 = new Edge();
 	Edge* e3 = new Edge();
 	Edge* e4 = new Edge();
 
+	/// Create Vertices for test element
 	Vertex* v1 = new Vertex();
 	Vertex* v2 = new Vertex();
 	Vertex* v3 = new Vertex();
 	Vertex* v4 = new Vertex();
+
+	/// Create Loops for test element
 	Loop* l1 = new Loop();
 	Loop* l2 = new Loop();
+
+	/// Create Solids for test element
 	Solid* s1 = new Solid();
 	//Solid* s2 = new Solid();
 
+	/// Run Euler operations
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
 	mev(*l1,*v2,*e2,*v3, -1.0f, 2.0f, 0);
 	mve(*e2, *v4, *e3, 1.0f, 1.0f, 1.0f);
 	mel(*l1, *v1, *v3, *e4, *l2);
 
-
+	/// check datastructure topology
 	if (!checkDS()) std::cout << "WARN: HalfEdgeDS NOT valid! (blame the programmer)" << std::endl;
 	
-	//mevvls(*e2, *v3, *v4, *l2, *s2, -1.0f, 2.0f, 3.0f, -3.0f, 2.0f, 1.0f);
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
 
 }
@@ -86,6 +92,19 @@ void HalfEdgeDS::clearDS()
 	solids.clear();
 }
 
+/**
+* Make-Edge-Vertex-Vertex-Loop-Solid
+* Start a new Solid by making an Edge E1 starting at new Vertex V1 and ending at new Vertex V2 with given coordinates in new Loop L1 and part of new Solid S1
+*
+* Note: old topological Elements as pointers and new Elements as reference?
+*
+* @param E1 new Edge
+* @param V1 starting Vertex for Edge E1
+* @param V2 new end Vertex for Edge E1
+* @param L1 new Loop
+* @param S1 new Solid
+* @param x, y, z Vertex V2-coordinates
+*/
 void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, float x1, float y1, float z1, float x2, float y2, float z2)
 {
 	Vec3f p1(x1, y1, z1);
@@ -138,6 +157,18 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 
 }
 
+/**
+* Make-Edge-Vertex 
+* Make an Edge E1 starting at Vertex V1 and ending at new Vertex V2 with coordinates x,y,z in Loop L1
+* 
+* Note: old topological Elements as pointers and new Elements as reference?
+* 
+* @param L1 Loop where Edge will be added
+* @param V1 starting Vertex for Edge E1
+* @param E1 new Edge
+* @param V2 new Vertex
+* @param x, y, z Vertex-coordinates
+*/
 void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float y, float z)
 {
 	Vec3f p(x, y, z);
@@ -173,52 +204,89 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	edges.push_back(&E1);
 }
 
+/**
+* Make-Vertex-Edge
+* Split an Edge E1 at new Vertex V1 with coordinates x,y,z into two parts with new Edge E1
+*
+* Note: old topological Elements as pointers and new Elements as reference?
+*
+* @param E1 Edge to be splitted
+* @param V1 Vertex where Edge E1 will end and new Edge E2 start
+* @param E2 new Edge
+* @param x, y, z Vertex-coordinates
+*/
 void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) {
-
+	/// Create new Vector for coordinates
 	Vec3f p(x, y, z);
+	/// Create new HalfEdges for new Edge
 	HalfEdge* rightHE1 = new HalfEdge();
 	HalfEdge* rightHE2 = new HalfEdge();
 
+	/// set new Vertex
 	V1.coordinates = p;
 	V1.outgoingHE = rightHE1;
 
+	/// get necessary old Vertices and HalfEdges
 	Vertex* leftV = E1.he1->startV;
 	Vertex* rightV = E1.he2->startV;
 	HalfEdge* leftHE1 = E1.he1;
 	HalfEdge* leftHE2 = E1.he2;
 
+	/// set new connections to outer HalfEdges
 	rightHE1->nextHE = leftHE1->nextHE;
 	leftHE1->nextHE->prevHE = rightHE1;
 	rightHE2->prevHE = leftHE2->prevHE;
 	leftHE2->prevHE->nextHE = rightHE2;
 
+	/// set connections at Vertex for new HalfEdges
 	rightHE1->prevHE = leftHE1;
 	rightHE2->nextHE = leftHE2;
 
+	/// set starting Vertices for new HalfEdges
 	rightHE1->startV = &V1;
 	rightHE2->startV = rightV;
 
+	/// set connections at Vertex for old HalfEdges
 	leftHE1->nextHE = rightHE1;
 	leftHE2->prevHE = rightHE2;
+
+	/// set new starting Vertex for old HalfEdge
 	leftHE2->startV = &V1;
 
-	leftV->outgoingHE = leftHE1;
+	/// set new outgoing HalfEdges for Vertices
+	leftV->outgoingHE = leftHE1; // ? nicht schon gesetzt?
 	rightV->outgoingHE = rightHE2;
 
+	/// set parent Edge for new HalfEdges
 	rightHE1->toEdge = &E2;
 	rightHE2->toEdge = &E2;
+	/// set loop for new HalfEdges
 	rightHE1->toLoop = leftHE1->toLoop;
 	rightHE2->toLoop = leftHE2->toLoop;
 
+	/// set HalfEdges for new Edge
 	E2.he1 = rightHE1;
 	E2.he2 = rightHE2;
 
+	/// insert new Vertex, HalfEdges and Edge at the end of the vectors/lists? and increases size by one
 	vertices.push_back(&V1);
 	halfEdges.push_back(rightHE1);
 	halfEdges.push_back(rightHE2);
 	edges.push_back(&E2);
 }
 
+/**
+* Make-Edge-Loop
+* Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
+*
+* Note: old topological Elements as pointers and new Elements as reference?
+*
+* @param L1 Loop which Edge E1 will close
+* @param V1 starting Vertex for Edge E1
+* @param V2 end Vertex for Edge E1
+* @param E1 new Edge
+* @param L2 new Loop
+*/
 void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 
 	HalfEdge* he1 = new HalfEdge();
@@ -268,6 +336,9 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
 	loops.push_back(&L2);
 }
 
+/**
+* Run selfmade check functions
+*/
 bool HalfEdgeDS::checkDS() 
 {
 	return checkVertices() && checkHalfEdges() && checkEdges() && checkLoops();
