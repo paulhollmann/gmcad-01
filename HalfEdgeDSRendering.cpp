@@ -4,28 +4,51 @@
 
 #include <GL/glut.h>
 
+/**
+* Render whole datastructure through Vertices and Edges
+*/
 void renderDS(const HalfEdgeDS& heDS)
 {
 	for (auto const *v : heDS.getVertices()) renderV(v); // render all vertices as points
 	for (auto const *e : heDS.getEdges()) renderE(e); // render all edges as lines
 }
 
+/**
+* Render the Edge with given color-Vector
+* 
+* @param e Edge passed to GL
+* @param color to draw Edge in
+*/
 void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 {
 	// TODO: render the edge with the given color
+	/// delimits a definition of a Line primitive
 	glBegin(GL_LINES);
+	// set the begin of the components for the Color
 	glColor3fv(&color.x);
+	/// define two vertices by their coordinates
 	glVertex3fv(&e->he1->startV->coordinates.x);
 	glVertex3fv(&e->he2->startV->coordinates.x);
+	/// first two Vertices will be grouped into a line
+	/// end of line definition
 	glEnd(); 
 }
 
+/**
+* Render the HalfEdge with given Color Vector
+* 
+* @param he HalfEdge passed to GL
+* @param color to draw HalfEdge in
+*/
 void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 {
 	// TODO: render the half-edge with the given color
+	/// delimits a definition of a Line primitive
 	glBegin(GL_LINES);
+	// set the begin of the components for the Color
 	glColor3fv(&color.x);
 	glVertex3fv(&he->startV->coordinates.x);
+	/// find end Vertex
 	Edge* e = he->toEdge;
 	if (e->he1->startV == he->startV)
 	{
@@ -35,25 +58,40 @@ void renderHE(const HalfEdge* he, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)
 	{
 		glVertex3fv(&e->he1->startV->coordinates.x);
 	}
-
+	/// first two Vertices will be grouped into a line
+	/// end of line definition
 	glEnd();
 }
 
+/**
+* Render the Vertex with given Color Vector
+*
+* @param v Vertex passed to GL
+* @param color to draw Vertex in
+*/
 void renderV(const Vertex* v, const Vec3f& color /*= Vec3f(1.0f, 0.0f, 1.0f)*/)
 {
 	// TODO: render the vertex with the given color
+	/// delimits a definition of a Point primitive
 	glBegin(GL_POINTS);
+	// set the begin of the components for the Color
 	glColor3fv(&color.x);
+	// set the begin of the components for the Coordinates
 	glVertex3fv(&v->coordinates.x);
 	glEnd();
+	/// end of point definition
 }
 
-
+/**
+* Render the active HalfEdge as a arrow
+*
+* @param he HalfEdge to be highlighted
+*/
 void renderHEActive(const HalfEdge* he)
 {
 	// TODO: render the currently selected half-edge.
-	// use renderArrow method to visualize the direction of the half-edge
 	if (he == nullptr) return;
+	// use renderArrow method to visualize the direction of the half-edge
 	renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.075f);
 }
 
