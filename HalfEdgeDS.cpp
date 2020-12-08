@@ -93,8 +93,8 @@ void HalfEdgeDS::clearDS()
 }
 
 /**
-* Make-Edge-Vertex-Vertex-Loop-Solid
-* Start a new Solid by making an Edge E1 starting at new Vertex V1 and ending at new Vertex V2 with given coordinates in new Loop L1 and part of new Solid S1
+* Make-Edge-Vertex-Vertex-Loop-Solid 
+* Start a new Solid by making an Edge E1 starting at new Vertex V1 and ending at new Vertex V2 with given coordinates in new Loop L1 and part of new Solid S1 
 *
 * Note: old topological Elements as pointers and new Elements as reference?
 *
@@ -107,45 +107,54 @@ void HalfEdgeDS::clearDS()
 */
 void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, float x1, float y1, float z1, float x2, float y2, float z2)
 {
+	/// Create new Vectors for coordinates
 	Vec3f p1(x1, y1, z1);
 	Vec3f p2(x2, y2, z2);
 
+	/// Create new HalfEdges for new Edge
 	HalfEdge* he1 = new HalfEdge();
 	HalfEdge* he2 = new HalfEdge();
 
+	/// Create new Face for new Loop
 	Face* f1 = new Face();
 
+	/// set new Vertices
 	V1.coordinates = p1;
 	V2.coordinates = p2;
 	V1.outgoingHE = he1;
 	V2.outgoingHE = he2;
 
-	he1->toLoop = &L1;
+	/// set new HalfEdges
+	he1->toLoop = &L1; // on same Loop
 	he2->toLoop = &L1;
-	he1->toEdge = &E1;
+	he1->toEdge = &E1; // part of same Edge
 	he2->toEdge = &E1;
-	he1->startV = &V1;
+	he1->startV = &V1; // starting from different Vertices
 	he2->startV = &V2;
-	he1->prevHE = he2;
+	he1->prevHE = he2; // pointing to each other
 	he2->prevHE = he1;
 	he1->nextHE = he2;
 	he2->nextHE = he1;
 	
-
+	/// set HalfEdges of new Edge
 	E1.he1 = he1;
 	E1.he2 = he2;
 
+	/// set new Loop
 	L1.toFace = f1;
 	L1.prevLoop = &L1;
 	L1.nextLoop = &L1;
-	L1.toHE = he1;
+	L1.toHE = he1; // choose any HalfEdge
 	
+	/// set new Face
 	f1->toSolid = &S1;
 	f1->outerLoop = &L1;
 	f1->innerLoop = nullptr;
 
+	/// set new Solid
 	S1.toFace = f1;
 
+	/// insert new Vertices, HalfEdges, Edge, Loop, Face and Solid at the end of the fields and increase size by one
 	vertices.push_back(&V1);
 	vertices.push_back(&V2);
 	halfEdges.push_back(he1);
@@ -159,7 +168,7 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 
 /**
 * Make-Edge-Vertex 
-* Make an Edge E1 starting at Vertex V1 and ending at new Vertex V2 with coordinates x,y,z in Loop L1
+* Make an Edge E1 starting at Vertex V1 and ending at new Vertex V2 with coordinates x,y,z in Loop L1 
 * 
 * Note: old topological Elements as pointers and new Elements as reference?
 * 
@@ -171,33 +180,43 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 */
 void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float y, float z)
 {
+	/// Create new Vector for coordinates
 	Vec3f p(x, y, z);
 
+	/// Create new HalfEdges for new Edge
 	HalfEdge* he1 = new HalfEdge();
 	HalfEdge* he2 = new HalfEdge();
 
+	/// set new Vertex V2
 	V2.coordinates = p;
 	V2.outgoingHE = he2;
 
+	/// get necessary HalfEdges
 	HalfEdge* inbound_he = V1.getInboundHE(&L1);
 	HalfEdge* outbound_he = inbound_he->nextHE;
+	/// set HalFEdge connections
 	inbound_he->nextHE = he1;
 	he1->prevHE = inbound_he;
-	he1->nextHE = he2;
+	he1->nextHE = he2; // new Edge goes to and away from V2
 	he2->prevHE = he1;
 	he2->nextHE = outbound_he;
 	outbound_he->prevHE = he2;
 
+	/// set start Vertices for new HalfEdges
 	he1->startV = &V1;
 	he2->startV = &V2;
+	/// set loop for new HalfEdges
 	he1->toLoop = &L1;
 	he2->toLoop = &L1;
+	/// set parent Edge for new HalfEdges
 	he1->toEdge = &E1;
 	he2->toEdge = &E1;
 
+	/// set HalfEdges of new Edge
 	E1.he1 = he1;
 	E1.he2 = he2;
 
+	/// insert new Vertex, HalfEdges and Edge at the end of the fields and increase size by one
 	vertices.push_back(&V2);
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
@@ -206,7 +225,7 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 
 /**
 * Make-Vertex-Edge
-* Split an Edge E1 at new Vertex V1 with coordinates x,y,z into two parts with new Edge E1
+* Split an Edge E1 at new Vertex V1 with coordinates x,y,z into two parts with new Edge E1 
 *
 * Note: old topological Elements as pointers and new Elements as reference?
 *
@@ -215,7 +234,8 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 * @param E2 new Edge
 * @param x, y, z Vertex-coordinates
 */
-void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) {
+void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
+{
 	/// Create new Vector for coordinates
 	Vec3f p(x, y, z);
 	/// Create new HalfEdges for new Edge
@@ -226,7 +246,7 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	V1.coordinates = p;
 	V1.outgoingHE = rightHE1;
 
-	/// get necessary old Vertices and HalfEdges
+	/// get necessary Vertices and HalfEdges
 	Vertex* leftV = E1.he1->startV;
 	Vertex* rightV = E1.he2->startV;
 	HalfEdge* leftHE1 = E1.he1;
@@ -242,7 +262,7 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	rightHE1->prevHE = leftHE1;
 	rightHE2->nextHE = leftHE2;
 
-	/// set starting Vertices for new HalfEdges
+	/// set start Vertices for new HalfEdges
 	rightHE1->startV = &V1;
 	rightHE2->startV = rightV;
 
@@ -260,15 +280,15 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 	/// set parent Edge for new HalfEdges
 	rightHE1->toEdge = &E2;
 	rightHE2->toEdge = &E2;
-	/// set loop for new HalfEdges
+	/// set Loops for new HalfEdges
 	rightHE1->toLoop = leftHE1->toLoop;
 	rightHE2->toLoop = leftHE2->toLoop;
 
-	/// set HalfEdges for new Edge
+	/// set HalfEdges of new Edge
 	E2.he1 = rightHE1;
 	E2.he2 = rightHE2;
 
-	/// insert new Vertex, HalfEdges and Edge at the end of the vectors/lists? and increases size by one
+	/// insert new Vertex, HalfEdges and Edge at the end of the fields and increase size by one
 	vertices.push_back(&V1);
 	halfEdges.push_back(rightHE1);
 	halfEdges.push_back(rightHE2);
@@ -287,49 +307,61 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z) 
 * @param E1 new Edge
 * @param L2 new Loop
 */
-void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2) {
-
+void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
+{
+	/// Create new HalfEdges for new Edge
 	HalfEdge* he1 = new HalfEdge();
 	HalfEdge* he2 = new HalfEdge();
 
+	/// get necessary HalfEdges
 	HalfEdge* leftInboundHE = V1.getInboundHE(&L1);
 	HalfEdge* leftOutboundHE = leftInboundHE->getConjugate();
-	
 	HalfEdge* rightInboundHE = V2.getInboundHE(&L1);
 	HalfEdge* rightOutboundHE = rightInboundHE->getConjugate();
 
+	/// set connections on "clockwise" Loop
 	leftInboundHE->nextHE = he1;
 	he1->prevHE = leftInboundHE;
 	he1->nextHE = rightOutboundHE;
 	rightOutboundHE->prevHE = he1;
 
+	/// set connections on "counter-clockwise" Loop
 	rightInboundHE->nextHE = he2;
 	he2->prevHE = rightInboundHE;
 	he2->nextHE = leftOutboundHE;
 	leftOutboundHE->prevHE = he1;
 
+	/// set Loops for new HalfEdges
 	he1->toLoop = &L1;
 	he2->toLoop = &L2;
+
+	/// set new Loop for HalfEdges succesive to he2
 	HalfEdge* he = he2->nextHE;
 	while (he != he2)
 	{
 		he->toLoop = &L2;
 		he = he->nextHE;
 	}
+
+	/// set start Vertices for new HalfEdges
 	he1->startV = &V1;
 	he2->startV = &V2;
 
+	/// set parent Edge for new HalfEdges
 	he1->toEdge = &E1;
 	he2->toEdge = &E1;
 
+	/// set HalfEdges of new Edge
 	E1.he1 = he1;
 	E1.he2 = he2;
 	
+	/// set any HalfEdge of Loop as reference to ensure the HalfEdge is on the Loop
 	L1.toHE = he1;
 	L2.toHE = he2;
 
 	//handle faces
 
+	/// insert new HalfEdges, Edge and Loop at the end of the fields and increase size by one
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
 	edges.push_back(&E1);
