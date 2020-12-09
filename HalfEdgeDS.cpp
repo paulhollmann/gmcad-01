@@ -402,15 +402,14 @@ bool HalfEdgeDS::checkHalfEdges()
 		if (he->prevHE == nullptr) std::cout << "WARN: he->prevHE == nullptr" << he << std::endl;
 		if (he->toEdge == nullptr) std::cout << "WARN: he->toEdge == nullptr" << he << std::endl;
 		if (he->toLoop == nullptr) std::cout << "WARN: he->toLoop == nullptr" << he << std::endl;
-		if (he->prevHE->nextHE != he) std::cout << "WARN: he->prevHE->nextHE != he" << he << std::endl;
-		if (he->nextHE->prevHE != he) std::cout << "WARN: he->nextHE->prevHE != he" << he << std::endl;
-		if (he->getConjugate() == nullptr) std::cout << "WARN: getConjugate() == nullptr" << he << std::endl;
-
 		if (he->startV == nullptr) return false;
 		if (he->nextHE == nullptr) return false;
 		if (he->prevHE == nullptr) return false;
 		if (he->toEdge == nullptr) return false;
 		if (he->toLoop == nullptr) return false;
+		if (he->prevHE->nextHE != he) std::cout << "WARN: he->prevHE->nextHE != he" << he << std::endl;
+		if (he->nextHE->prevHE != he) std::cout << "WARN: he->nextHE->prevHE != he" << he << std::endl;
+		if (he->getConjugate() == nullptr) std::cout << "WARN: getConjugate() == nullptr" << he << std::endl;
 		if (he->prevHE->nextHE != he) return false;
 		if (he->nextHE->prevHE != he) return false;
 		if (he->getConjugate() == nullptr) return false;
