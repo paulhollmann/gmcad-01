@@ -433,9 +433,12 @@ bool HalfEdgeDS::checkLoops()
 	{
 		if (l->toHE == nullptr) return false;
 		HalfEdge* he = l->toHE;
+		int i = 0;
 		do 
 		{
 			he = he->nextHE;
+			i++;
+			if (i > 1000) return false;
 		} 
 		while (he != l->toHE);
 	}
