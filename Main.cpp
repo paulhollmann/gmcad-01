@@ -144,6 +144,9 @@ void renderScene()
 // === CALLBACKS ===
 // =================
 
+/**
+* Listen for Key Inputs
+*/
 void keyPressed(unsigned char key, int x, int y)
 {
 	switch (key)
@@ -166,43 +169,57 @@ void keyPressed(unsigned char key, int x, int y)
 
 	// TODO: Provide a navigation functionality to traverse the data structure via the half-edges (next, previous, opposite, loop-switch) using the keyboard.
 	// Note: To highlight the active half-edge just set the variable 'activeHE' which will already be rendered using the 'renderHEActive' method!
+	/// by pressing n traverse the data structure by next HalfEdge
 	case 'n':
 		selectNextHE();
 		break;
+	/// by pressing c traverse the data structure to conjugate HalfEdge
 	case 'c':
 		selectConjugateHE();
 		break;
 	}
 }
 
+/**
+* Select next HalfEdge as active
+*/
 void selectNextHE() {
+	/// if no HalfEdges are present set active to nullpointer
 	if (heDS.getHalfEdges().size() == 0)
 	{
 		activeHE = nullptr;
 	}
+	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
 	else if (activeHE == nullptr)
 	{
 		activeHE = heDS.getHalfEdges().front();
 	}
 	else 
 	{
+		/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 		activeHE = activeHE->nextHE;
 	}
 	std::cout << "activeHE=" << activeHE << std::endl;
 	glutPostRedisplay();
 }
 
+/**
+* Select conjugate HalfEdge as active
+*/
 void selectConjugateHE() {
+	/// if no HalfEdges are present set active to nullpointer
 	if (heDS.getHalfEdges().size() == 0)
 	{
 		activeHE = nullptr;
 	}
+	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active 
 	else if (activeHE == nullptr)
 	{
 		activeHE = heDS.getHalfEdges().front();
 	}
 	else
 	{
+		/// set new active HalfEdge as conjugate HalfEdge of the active HalfEdge
 		activeHE = activeHE->getConjugate();
 	}
 	std::cout << "activeHE=" << activeHE << std::endl;
