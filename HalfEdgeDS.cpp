@@ -69,7 +69,10 @@ void HalfEdgeDS::createDefaultObject()
 	mel(*l1, *v1, *v3, *e4, *l2);
 
 	/// check datastructure topology
-	if (!checkDS()) std::cout << "WARN: HalfEdgeDS NOT valid! (blame the programmer)" << std::endl;
+	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
+	if (!checkHalfEdges()) std::cout << "WARN: checkHalfEdges NOT valid! (blame the programmer)" << std::endl;
+	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
+	if (!checkVertices()) std::cout << "WARN: checkVertices NOT valid! (blame the programmer)" << std::endl;
 	
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
 
@@ -329,7 +332,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	rightInboundHE->nextHE = he2;
 	he2->prevHE = rightInboundHE;
 	he2->nextHE = leftOutboundHE;
-	leftOutboundHE->prevHE = he1;
+	leftOutboundHE->prevHE = he2;
 
 	/// set Loops for new HalfEdges
 	he1->toLoop = &L1;
@@ -394,6 +397,15 @@ bool HalfEdgeDS::checkHalfEdges()
 {
 	for (HalfEdge* he : halfEdges)
 	{
+		if (he->startV == nullptr) std::cout << "WARN: he->startV == nullptr" << he << std::endl;
+		if (he->nextHE == nullptr) std::cout << "WARN: he->nextHE == nullptr" << he << std::endl;
+		if (he->prevHE == nullptr) std::cout << "WARN: he->prevHE == nullptr" << he << std::endl;
+		if (he->toEdge == nullptr) std::cout << "WARN: he->toEdge == nullptr" << he << std::endl;
+		if (he->toLoop == nullptr) std::cout << "WARN: he->toLoop == nullptr" << he << std::endl;
+		if (he->prevHE->nextHE != he) std::cout << "WARN: he->prevHE->nextHE != he" << he << std::endl;
+		if (he->nextHE->prevHE != he) std::cout << "WARN: he->nextHE->prevHE != he" << he << std::endl;
+		if (he->getConjugate() == nullptr) std::cout << "WARN: getConjugate() == nullptr" << he << std::endl;
+
 		if (he->startV == nullptr) return false;
 		if (he->nextHE == nullptr) return false;
 		if (he->prevHE == nullptr) return false;
