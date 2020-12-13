@@ -371,6 +371,28 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	loops.push_back(&L2);
 }
 
+
+/**
+* Kill-Edge-Make-Hole
+* 
+* Note ONLY outer loop to inner loop NOT inner loop to two inner loops
+*
+* @param V1 starting Vertex for Edge E1
+* @param V2 end Vertex for Edge E1
+* @param L1 Loop that will be split
+* @param L2 new Loop
+* @param E1 Edge to kill
+*/
+void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
+{
+
+	// code of the best programmers ...
+
+	edges.remove(&E1);
+	delete &E1;
+	loops.push_back(&L2);
+}
+
 /**
 * Run selfmade check functions
 */
