@@ -7,10 +7,10 @@
 /**
 * Render whole datastructure through Vertices and Edges
 */
-void renderDS(const HalfEdgeDS& heDS)
+void renderDS(const HalfEdgeDS& heDS, const HalfEdge* activeHE /*= nullptr*/)
 {
 	for (auto const *v : heDS.getVertices()) renderV(v); // render all vertices as points
-	for (auto const *e : heDS.getEdges()) renderE(e); // render all edges as lines
+	for (auto const *e : heDS.getEdges()) renderE(e,activeHE); // render all edges as lines
 }
 
 /**
@@ -19,10 +19,24 @@ void renderDS(const HalfEdgeDS& heDS)
 * @param e Edge passed to GL
 * @param color to draw Edge in
 */
-void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
+void renderE(const Edge* e, const HalfEdge* activeHE ,const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 {
 	// TODO: render the edge with the given color
 	/// delimits a definition of a Line primitive
+
+	// skip HEs on activeHE Loop
+	if (activeHE != nullptr) {
+		HalfEdge* he = activeHE->nextHE;
+		while (he != activeHE)
+		{
+			if (e->he1 == he || e->he2 == he)
+			{
+				return;
+			}
+			he = he->nextHE;
+		}
+	}
+
 	glBegin(GL_LINES);
 	// set the begin of the components for the Color
 	glColor3fv(&color.x);
@@ -92,7 +106,12 @@ void renderHEActive(const HalfEdge* he)
 	// TODO: render the currently selected half-edge.
 	if (he == nullptr) return;
 	// use renderArrow method to visualize the direction of the half-edge
-	renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.075f);
+	renderArrow(he->startV->coordinates, he->nextHE->startV->coordinates, 0.05f);
+	HalfEdge* heptr = he->nextHE;
+	while (heptr != he) {
+		renderHE(heptr, Vec3f(0.4f, 0.0f, 1.0f));
+		heptr = heptr->nextHE;
+	}
 }
 
 void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)
@@ -109,7 +128,7 @@ void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)
 
 	if((dir.x!=0.)||(dir.y!=0.)) {
 		glRotated(atan2(dir.y,dir.x)/RADPERDEG,0.,0.,1.);
-		glRotated(atan2(sqrt(dir.x*dir.x+dir.y*dir.y),dir.z)/RADPERDEG,0.,1.,0.);
+		glRotated(atan2(sqrt(double (dir.x) * double(dir.x)+ double(dir.y) * double(dir.y)),dir.z)/RADPERDEG,0.,1.,0.);
 	} else if (dir.z<0){
 		glRotated(180,1.,0.,0.);
 	}
@@ -119,13 +138,13 @@ void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)
 	quadObj = gluNewQuadric ();
 	gluQuadricDrawStyle (quadObj, GLU_FILL);
 	gluQuadricNormals (quadObj, GLU_SMOOTH);
-	gluCylinder(quadObj, 2*diameter, 0.0, 4*diameter, 32, 1);
+	gluCylinder(quadObj, 2.0*diameter, 0.0, 4.0*diameter, 32, 1);
 	gluDeleteQuadric(quadObj);
 
 	quadObj = gluNewQuadric ();
 	gluQuadricDrawStyle (quadObj, GLU_FILL);
 	gluQuadricNormals (quadObj, GLU_SMOOTH);
-	gluDisk(quadObj, 0.0, 2*diameter, 32, 1);
+	gluDisk(quadObj, 0.0, 2.0*diameter, 32, 1);
 	gluDeleteQuadric(quadObj);
 
 	glTranslatef(0,0,-length+4*diameter);
@@ -133,7 +152,7 @@ void renderArrow(const Vec3f& p1, const Vec3f& p2, float diameter)
 	quadObj = gluNewQuadric ();
 	gluQuadricDrawStyle (quadObj, GLU_FILL);
 	gluQuadricNormals (quadObj, GLU_SMOOTH);
-	gluCylinder(quadObj, diameter, diameter, length-4*diameter, 32, 1);
+	gluCylinder(quadObj, diameter, diameter, length-4.0*diameter, 32, 1);
 	gluDeleteQuadric(quadObj);
 
 	quadObj = gluNewQuadric ();

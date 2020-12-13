@@ -130,7 +130,7 @@ void renderScene()
 	glRotatef(angleY, 1.0f, 0.0f, 0.0f);	
 	// draw data structure (lines) without lighting
 	glDisable(GL_LIGHTING);
-	renderDS(heDS);
+	renderDS(heDS, activeHE);
 	// draw 3D objects with lighting
 	glEnable(GL_LIGHTING);
 	renderHEActive(activeHE);
