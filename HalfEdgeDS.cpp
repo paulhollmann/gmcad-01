@@ -48,25 +48,48 @@ void HalfEdgeDS::createDefaultObject()
 	Edge* e3 = new Edge();
 	Edge* e4 = new Edge();
 
+	Edge* e5 = new Edge();
+	Edge* e6 = new Edge();
+	Edge* e7 = new Edge();
+	Edge* e8 = new Edge();
+
+	Edge* e9 = new Edge();
+
 	/// Create Vertices for test element
 	Vertex* v1 = new Vertex();
 	Vertex* v2 = new Vertex();
 	Vertex* v3 = new Vertex();
 	Vertex* v4 = new Vertex();
 
+	Vertex* v5 = new Vertex();
+	Vertex* v6 = new Vertex();
+	Vertex* v7 = new Vertex();
+	Vertex* v8 = new Vertex();
+
 	/// Create Loops for test element
 	Loop* l1 = new Loop();
 	Loop* l2 = new Loop();
+
+	Loop* l3 = new Loop();
 
 	/// Create Solids for test element
 	Solid* s1 = new Solid();
 	//Solid* s2 = new Solid();
 
 	/// Run Euler operations
-	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f);
-	mev(*l1,*v2,*e2,*v3, -1.0f, 2.0f, 0);
-	mve(*e2, *v4, *e3, 1.0f, 1.0f, 1.0f);
+
+	// base
+	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
+	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
 	mel(*l1, *v1, *v3, *e4, *l2);
+	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
+
+	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
+	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
+	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
+	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
+
+	mel(*l1, *v5, *v6, *e9, *l3);
 
 	/// check datastructure topology
 	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
