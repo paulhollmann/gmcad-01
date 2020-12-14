@@ -120,7 +120,7 @@ void HalfEdgeDS::createDefaultObject()
 	*/
 
 	//------- Creating inner Edges --------//
-	/*
+	
 	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
 
 	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
@@ -508,7 +508,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	}
 
 	he1 = he1->nextHE;
-	he1->getConjugate();
+	//he1->getConjugate();
 	// Add Edge to loop L2
 	he1->toLoop = &L2;
 	L2.toHE = he1;
@@ -521,6 +521,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 		if (he->nextHE->startV == &V2) {
 			he->nextHE = he1;
 			he1->prevHE = he;
+			break;
 		}
 		he = he->nextHE;
 	}
@@ -529,11 +530,15 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	if (E1.he1->startV == &V1) {
 		E1.he1->prevHE->nextHE = E1.he2->nextHE;
 		E1.he2->nextHE->prevHE = E1.he1->prevHE;
+		L1.toHE = E1.he1->prevHE->nextHE;
 	}
 	else {
 		E1.he2->prevHE->nextHE = E1.he1->nextHE;
 		E1.he1->nextHE->prevHE = E1.he2->prevHE;
+		L1.toHE = E1.he2->prevHE->nextHE;
 	}
+
+	
 	
 
 
