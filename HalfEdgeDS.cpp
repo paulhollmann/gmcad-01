@@ -376,10 +376,11 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 */
 void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 {
-	Edge* v1E = V1.getRandInboundHE(&L1)->toEdge;
-	Edge* v2E = V2.getRandInboundHE(&L1)->toEdge;
-	
-	this->mel(L1, V1, *v1E, *v1E, V2, *v2E, *v2E, E1, L2);
+	Edge* v1Ei = V1.getRandInboundHE(&L1)->toEdge;
+	Edge* v1Eo = V1.getRandInboundHE(&L1)->nextHE->toEdge;
+	Edge* v2Ei = V2.getRandInboundHE(&L1)->toEdge;
+	Edge* v2Eo = V2.getRandInboundHE(&L1)->nextHE->toEdge;
+	this->mel(L1, V1, *v1Ei, *v1Eo, V2, *v2Ei, *v2Eo, E1, L2);
 }
 
 
