@@ -536,6 +536,7 @@ bool HalfEdgeDS::checkLoops()
 		int i = 0;
 		do 
 		{
+			if (he == nullptr) return false;
 			he = he->nextHE;
 			i++;
 			if (i > 1000) return false;
