@@ -105,7 +105,11 @@ void HalfEdgeDS::createDefaultObject()
 	
 	/*
 
-	
+	mev(*l1, *v5, *e6, *v6, 2.0f, 2.0f, 2.0f);
+	mev(*l1, *v6, *e7, *v7, 1.0f, 2.0f, 2.0f);
+	mev(*l1, *v7, *e8, *v8, 1.0f, 2.0f, 1.0f);
+
+	/*
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
@@ -116,7 +120,7 @@ void HalfEdgeDS::createDefaultObject()
 	*/
 
 	//------- Creating inner Edges --------//
-
+	/*
 	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
 
 	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
@@ -504,6 +508,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	}
 
 	he1 = he1->nextHE;
+	he1->getConjugate();
 	// Add Edge to loop L2
 	he1->toLoop = &L2;
 	L2.toHE = he1;
@@ -545,6 +550,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	delete &E1;
 	// Push Loop in loop list
 	loops.push_back(&L2);
+	innerLoops.push_back(&L2);
 	}
 
 /**
@@ -576,7 +582,7 @@ bool HalfEdgeDS::checkEulerPoincare()
 
 	int H = V - E + F - 2 * (S - R);
 	/// H: Number of Holes
-	std::cout << "Existieren " << "H" << " Löcher? j/n";
+	std::cout << "Existieren " << "H" << " Lï¿½cher? j/n";
 	return false;
 }
 

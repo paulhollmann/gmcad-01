@@ -4,8 +4,11 @@
 #include <math.h>		// fmod
 #include <stdio.h>		// cout
 #include <iostream>		// cout
+#include <string>		// String
 
 #include "HalfEdgeDSRendering.h"	// visualizing the data structure
+
+using namespace std;
 
 // ==============
 // === BASICS ===
@@ -180,20 +183,69 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'l':
 		selectNextLoop();
 		break;
-	case 'm':
-		float a, b, c;
-		std::cout << "Geben Sie die x Koordinate ein";
-		std::cin >> a;
-		std::cout << "Geben Sie die y Koordinate ein";
-		std::cin >> b;
-		std::cout << "Geben Sie die z Koordinate ein";
-		std::cin >> c;
-		Loop *l = heDS.getLoops().front();
-		Vertex* v = heDS.getVertices().front();
-		Edge* e = new Edge();
-		Vertex* v2 = new Vertex();
-		heDS.mev(*l, *v, *e, *v2, a, b, c);
-		glutPostRedisplay();
+	case 'o':
+		if (activeHE == nullptr)
+		{
+			std::cout << "Waehlen Sie zunaechst einen Startpunkt" << std::endl;
+			break;
+		}
+		string in;
+		cout << "Geben Sie an, welchen Operator Sie ausführen möchten"  << endl;
+		cin >> in;
+		if (strcmp(in.c_str(),"mevvls") == 0)
+		{
+
+		}
+		else if (strcmp(in.c_str(),"mev") == 0)
+		{
+			float a, b, c;
+			std::cout << "Geben Sie die x Koordinate ein";
+			std::cin >> a;
+			std::cout << "Geben Sie die y Koordinate ein";
+			std::cin >> b;
+			std::cout << "Geben Sie die z Koordinate ein";
+			std::cin >> c;
+			Edge* e = new Edge();
+			Vertex* v2 = new Vertex();
+			heDS.mev(*activeHE->toLoop, *activeVE, *e, *v2, a, b, c);
+			glutPostRedisplay();
+			break;
+		}
+		else if (strcmp(in.c_str(), "mve") == 0)
+		{
+			float a, b, c;
+			std::cout << "Geben Sie die x Koordinate ein";
+			std::cin >> a;
+			std::cout << "Geben Sie die y Koordinate ein";
+			std::cin >> b;
+			std::cout << "Geben Sie die z Koordinate ein";
+			std::cin >> c;
+			Edge* e2 = new Edge();
+			Vertex* v2 = new Vertex();
+			heDS.mve(*activeHE->toEdge, *v2, *e2, a, b, c);
+			glutPostRedisplay();
+			break;
+		}
+		else if (strcmp(in.c_str(), "mel") == 0)
+		{
+
+		}
+		else if (strcmp(in.c_str(), "kemh") == 0)
+		{
+			Loop* l = new Loop();
+			activeHE = activeHE->nextHE;
+			glutPostRedisplay();
+			cout << "Aktive Loop" << activeHE->toLoop << endl;
+			cout << "Erstse Loop in der LIsten" << heDS.getLoops().front() << endl;
+			//heDS.kemh(*activeHE->prevHE->startV, *activeHE->prevHE->getConjugate()->startV, *activeHE->toLoop, *l, *activeHE->prevHE->toEdge);
+			//activeHE = activeHE->prevHE->getConjugate();
+			glutPostRedisplay();
+			break;
+		}
+		else {
+			cout << "Dies ist kein gueltiger Euler Operator." << endl;
+			break;
+		}
 		break;
 	}
 }
@@ -211,11 +263,13 @@ void selectNextHE() {
 	else if (activeHE == nullptr)
 	{
 		activeHE = heDS.getHalfEdges().front();
+		activeVE = activeHE->startV;
 	}
 	else 
 	{
 		/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 		activeHE = activeHE->nextHE;
+		activeVE = activeHE->startV;
 	}
 	std::cout << "activeHE=" << activeHE << std::endl;
 	glutPostRedisplay();
@@ -226,14 +280,19 @@ void selectNextHE() {
 */
 void selectConjugateHE() {
 	/// if no HalfEdges are present set active to nullpointer
-	if (heDS.getHalfEdges().size() == 0)
+	if (heDS.getHalfEdges().size() == 0) {
 		activeHE = nullptr;
+	}
 	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active 
-	else if (activeHE == nullptr)
+	else if (activeHE == nullptr) {
 		activeHE = heDS.getHalfEdges().front();
+		activeVE = activeHE->startV;
+	}
 	/// set new active HalfEdge as conjugate HalfEdge of the active HalfEdge
-	else
+	else {
 		activeHE = activeHE->getConjugate();
+		activeVE = activeHE->startV;
+	}
 	std::cout << "activeHE=" << activeHE << std::endl;
 	glutPostRedisplay();
 }

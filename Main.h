@@ -21,6 +21,7 @@
 // ===================
 
 HalfEdgeDS heDS;		// instance of our data structure
+Vertex* activeVE;
 HalfEdge* activeHE;		// the currently active half edge
 Loop* activeLoop;
 

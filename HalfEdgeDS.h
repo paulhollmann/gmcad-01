@@ -29,6 +29,7 @@ protected:
 	std::list<Solid*> solids;
 	std::list<Face*> faces;
 	std::list<Loop*> loops;
+	std::list<Loop*> innerLoops;
 	std::list<Edge*> edges;
 	std::list<HalfEdge*> halfEdges;
 	std::list<Vertex*> vertices;

@@ -95,7 +95,6 @@ void renderV(const Vertex* v, const Vec3f& color /*= Vec3f(1.0f, 0.0f, 1.0f)*/)
 	glEnd();
 	/// end of point definition
 }
-
 /**
 * Render the active HalfEdge as a arrow
 *
