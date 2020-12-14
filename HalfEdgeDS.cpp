@@ -68,15 +68,16 @@ void HalfEdgeDS::createDefaultObject()
 	Edge* e12 = new Edge();
 	Edge* e13 = new Edge();
 	Edge* e14 = new Edge();
+	Edge* e15 = new Edge();
+	Edge* e16 = new Edge();
+	Edge* e17 = new Edge();
 
 	Vertex* v9 = new Vertex();
 	Vertex* v10 = new Vertex();
 	Vertex* v11 = new Vertex();
 	Vertex* v12 = new Vertex();
 
-	Loop* l4 = new Loop();
-	Loop* l5 = new Loop();
-
+	
 	//---------- TEST OBJECTS FOR MEKH END----------------//
 
 	Vertex* v5 = new Vertex();
@@ -88,7 +89,13 @@ void HalfEdgeDS::createDefaultObject()
 	Loop* l1 = new Loop();
 	Loop* l2 = new Loop();
 
-	Loop* l3 = new Loop();
+	Loop* l3 = new Loop(); 
+	Loop* l4 = new Loop();
+	Loop* l5 = new Loop();
+	Loop* l6 = new Loop();
+	Loop* l7 = new Loop();
+	Loop* l8 = new Loop();
+
 
 	/// Create Solids for test element
 	Solid* s1 = new Solid();
@@ -103,34 +110,30 @@ void HalfEdgeDS::createDefaultObject()
 	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
 
 	
-	/*
-
-	mev(*l1, *v5, *e6, *v6, 2.0f, 2.0f, 2.0f);
-	mev(*l1, *v6, *e7, *v7, 1.0f, 2.0f, 2.0f);
-	mev(*l1, *v7, *e8, *v8, 1.0f, 2.0f, 1.0f);
-
-	/*
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 
-	mel(*l1, *v5, *v6, *e9, *l3);
+	//mel(*l1, *v5, *v6, *e9, *l3);
+	mel(*l1, *v6, *v7, *e10, *l4);
+	//mel(*l1, *v7, *v8, *e11, *l5);
+	mel(*l1, *v8, *v5, *e12, *l6);
+	
 
-	*/
+	
 
 	//------- Creating inner Edges --------//
+	/*
+	mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
+	mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
+	mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
+	mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
 	
-	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
-
-	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
-	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
-	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
+	mel(*l2, *v9,*e14, *e13, *v12, *e16, *e16, *e17, *l7);
 	
-	mel(*l2, *v9,*e11, *e10, *v12, *e13, *e13, *e14, *l4);
-
-	kemh(*v1, *v9, *l2, *l5, *e10);
-	
+	//kemh(*v1, *v9, *l2, *l8, *e10);
+	*/
 
 
 	/// check datastructure topology
@@ -279,7 +282,9 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	/// set parent Edge for new HalfEdges
 	he1->toEdge = &E1;
 	he2->toEdge = &E1;
-
+	///
+	L1.toHE = he1;
+	L1.toHE = he2;
 	/// set HalfEdges of new Edge
 	E1.he1 = he1;
 	E1.he2 = he2;
@@ -483,7 +488,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex&
 	halfEdges.push_back(he2);
 	edges.push_back(&E3);
 	loops.push_back(&L2);
-
+	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
 
 }
 
