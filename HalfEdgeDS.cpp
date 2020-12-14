@@ -75,6 +75,7 @@ void HalfEdgeDS::createDefaultObject()
 	Vertex* v12 = new Vertex();
 
 	Loop* l4 = new Loop();
+	Loop* l5 = new Loop();
 
 	//---------- TEST OBJECTS FOR MEKH END----------------//
 
@@ -106,22 +107,22 @@ void HalfEdgeDS::createDefaultObject()
 	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
 	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
 	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
-	mel(*l2, *v12, *v9, *e9, *l3);
+	mel(*l2, *v12, *v9, *e14, *l4);
 
-	kemh(*v1, *v9, *l1, *l4, *e10);
+	kemh(*v1, *v9, *l2, *l5, *e10);
 
-	/*
+	
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 
 	mel(*l1, *v5, *v6, *e9, *l3);
-	*/
+	
 	/// check datastructure topology
 	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
 	if (!checkHalfEdges()) std::cout << "WARN: checkHalfEdges NOT valid! (blame the programmer)" << std::endl;
-	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
+	//if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
 	if (!checkVertices()) std::cout << "WARN: checkVertices NOT valid! (blame the programmer)" << std::endl;
 	
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
@@ -476,7 +477,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 */
 bool HalfEdgeDS::checkDS() 
 {
-	return checkVertices() && checkHalfEdges() && checkEdges() && checkLoops();
+	return checkVertices() && checkHalfEdges() && checkEdges();//&& checkLoops();
 }
 
 bool HalfEdgeDS::checkEulerPoincare()

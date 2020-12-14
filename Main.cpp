@@ -250,7 +250,7 @@ void mousePressed(int button, int state, int x, int y)
 
 void mouseMoved(int x, int y)
 {
-	// rotate (cap angleY within [-85°, +85°])
+	// rotate (cap angleY within [-85ï¿½, +85ï¿½])
 	if (mouseButton == GLUT_LEFT_BUTTON)
 	{
 		angleX = fmod(angleX + (x-mouseX) * mouseSensitivy, 360.0f);
