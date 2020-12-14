@@ -69,6 +69,8 @@ void mouseMoved(int x, int y);
 
 void selectNextHE();
 
+void selectPreviousHE();
+
 void selectConjugateHE();
 
 void selectNextLoop();

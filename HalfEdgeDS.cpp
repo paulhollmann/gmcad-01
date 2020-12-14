@@ -103,27 +103,28 @@ void HalfEdgeDS::createDefaultObject()
 
 	/// Run Euler operations
 
-	// base
+	//------- Creating a base square --------//
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
 	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
 	mel(*l1, *v1, *v3, *e4, *l2);
 	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
 
-	
+	//------- Creating upwards edges --------//
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 
+	//------- Connecting edges to cube --------//
 	//mel(*l1, *v5, *v6, *e9, *l3);
 	mel(*l1, *v6, *v7, *e10, *l4);
 	//mel(*l1, *v7, *v8, *e11, *l5);
-	mel(*l1, *v8, *v5, *e12, *l6);
+	//mel(*l1, *v8, *v5, *e12, *l6);
 	
 
 	
 
-	//------- Creating inner Edges --------//
+	//------- Creating an inner Square in base --------//
 	/*
 	mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
 	mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
@@ -407,6 +408,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex&
 {
 	/// get necessary HalfEdges
 	HalfEdge* leftOutboundHE,* leftInboundHE,* rightOutboundHE,* rightInboundHE;
+	/// find he outbound to V1 on inner loop
 	if (E1inner.he1->startV == &V1)
 		leftOutboundHE = E1inner.he1;
 	else if (E1inner.he2->startV == &V1)
@@ -414,6 +416,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex&
 	else
 		std::cout << "ERR: mel E1inner not near V1";
 
+	/// find he inbound to V1 on outer loop
 	if (E1outer.he1->nextHE->startV == &V1)
 		leftInboundHE = E1outer.he1;
 	else if (E1outer.he2->nextHE->startV == &V1)
@@ -421,7 +424,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex&
 	else
 		std::cout << "ERR: mel E1outer not near V1";
 
-
+	/// find he outbound to V2 on outer loop
 	if (E2outer.he1->startV == &V2)
 		rightOutboundHE = E2outer.he1;
 	else if (E2outer.he2->startV == &V2)
@@ -429,6 +432,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex&
 	else
 		std::cout << "ERR: mel E2outer not near V2";
 
+	/// find he inbound to V2 on inner loop
 	if (E2inner.he1->nextHE->startV == &V2)
 		rightInboundHE = E2inner.he1;
 	else if (E2inner.he2->nextHE->startV == &V2)

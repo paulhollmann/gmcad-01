@@ -176,6 +176,10 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'n':
 		selectNextHE();
 		break;
+		/// by pressing n traverse the data structure by previous HalfEdge
+	case 'p':
+		selectPreviousHE();
+		break;
 	/// by pressing c traverse the data structure to conjugate HalfEdge
 	case 'c':
 		selectConjugateHE();
@@ -269,6 +273,31 @@ void selectNextHE() {
 	{
 		/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 		activeHE = activeHE->nextHE;
+		activeVE = activeHE->startV;
+	}
+	std::cout << "activeHE=" << activeHE << std::endl;
+	glutPostRedisplay();
+}
+
+/**
+* Select previous HalfEdge as active
+*/
+void selectPreviousHE() {
+	/// if no HalfEdges are present set active to nullpointer
+	if (heDS.getHalfEdges().size() == 0)
+	{
+		activeHE = nullptr;
+	}
+	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
+	else if (activeHE == nullptr)
+	{
+		activeHE = heDS.getHalfEdges().front();
+		activeVE = activeHE->startV;
+	}
+	else
+	{
+		/// set new active HalfEdge as previous HalfEdge of the active HalfEdge
+		activeHE = activeHE->prevHE;
 		activeVE = activeHE->startV;
 	}
 	std::cout << "activeHE=" << activeHE << std::endl;
