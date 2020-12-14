@@ -61,6 +61,23 @@ void HalfEdgeDS::createDefaultObject()
 	Vertex* v3 = new Vertex();
 	Vertex* v4 = new Vertex();
 
+	//---------- TEST OBJECTS FOR MEKH BEGIN----------------//
+
+	Edge* e10 = new Edge();
+	Edge* e11 = new Edge();
+	Edge* e12 = new Edge();
+	Edge* e13 = new Edge();
+	Edge* e14 = new Edge();
+
+	Vertex* v9 = new Vertex();
+	Vertex* v10 = new Vertex();
+	Vertex* v11 = new Vertex();
+	Vertex* v12 = new Vertex();
+
+	Loop* l4 = new Loop();
+
+	//---------- TEST OBJECTS FOR MEKH END----------------//
+
 	Vertex* v5 = new Vertex();
 	Vertex* v6 = new Vertex();
 	Vertex* v7 = new Vertex();
@@ -84,13 +101,23 @@ void HalfEdgeDS::createDefaultObject()
 	mel(*l1, *v1, *v3, *e4, *l2);
 	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
 
+	//------- Creating inner Edges --------//
+	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
+	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
+	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
+	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
+	mel(*l2, *v12, *v9, *e9, *l3);
+
+	kemh(*v1, *v9, *l1, *l4, *e10);
+
+	/*
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 
 	mel(*l1, *v5, *v6, *e9, *l3);
-
+	*/
 	/// check datastructure topology
 	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
 	if (!checkHalfEdges()) std::cout << "WARN: checkHalfEdges NOT valid! (blame the programmer)" << std::endl;
@@ -409,12 +436,40 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 {
 
-	// code of the best programmers ...
+	// Get next HalfEdge of the Edge which will deleted
+	HalfEdge* he1 = E1.he1->nextHE;
+	// Add Edge to loop L2
+	he1->toLoop = &L2;
+	L2.toHE = he1;
+	
+	// get the next HalfEdge, to create clockwise loop
+	HalfEdge* he = he1->nextHE;
+	while (he->startV != &V2)
+	{
+		he->toLoop = &L2;
+		if (he->nextHE->startV == &V2) {
+			he->nextHE = he1;
+		}
+		he = he->nextHE;
+	}
+	
+	// Close Loop L1
+	E1.he1->prevHE->nextHE = E1.he2->nextHE;
 
-	edges.remove(&E1);
+
+	std::cout << "Ausgehende Edge " << &V1.outgoingHE << " Eingehende Edge " << V1.getInboundHE(&L1) << std::endl;
+	// remove the Edge
+	edges.remove(&E1);	
+	// remove the HalfEdges of the Edge
+	halfEdges.remove(E1.he1);
+	halfEdges.remove(E1.he2);
+	//delete Edges
+	delete E1.he1;
+	delete E1.he2;
 	delete &E1;
+	// Push Loop in loop list
 	loops.push_back(&L2);
-}
+	}
 
 /**
 * Run selfmade check functions

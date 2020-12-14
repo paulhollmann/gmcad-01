@@ -22,6 +22,7 @@
 
 HalfEdgeDS heDS;		// instance of our data structure
 HalfEdge* activeHE;		// the currently active half edge
+Loop* activeLoop;
 
 // do not modify data below unless you know what you do
 // camera Information
@@ -68,5 +69,7 @@ void mouseMoved(int x, int y);
 void selectNextHE();
 
 void selectConjugateHE();
+
+void selectNextLoop();
 
 void coutHelp();

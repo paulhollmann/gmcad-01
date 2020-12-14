@@ -177,6 +177,9 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'c':
 		selectConjugateHE();
 		break;
+	case 'l':
+		selectNextLoop();
+		break;
 	}
 }
 
@@ -226,6 +229,27 @@ void selectConjugateHE() {
 	glutPostRedisplay();
 }
 
+/*
+* Switch between different loops
+* NOTE: DOES NOT WORK AS INTENDED BY NOW
+*/
+void selectNextLoop() {
+	if (heDS.getLoops().size() == 0 || heDS.getLoops().size() == 1)
+	{
+		return;
+	}
+	else if (activeLoop == NULL) {
+		
+		activeLoop = heDS.getLoops().front();
+		activeHE = activeLoop->toHE;
+	}
+	else {
+		activeLoop = heDS.getLoops().back();
+		activeHE = activeLoop->toHE;
+		
+	}
+	glutPostRedisplay();
+}
 
 void mousePressed(int button, int state, int x, int y)
 {
