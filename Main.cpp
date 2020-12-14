@@ -180,6 +180,21 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'l':
 		selectNextLoop();
 		break;
+	case 'm':
+		float a, b, c;
+		std::cout << "Geben Sie die x Koordinate ein";
+		std::cin >> a;
+		std::cout << "Geben Sie die y Koordinate ein";
+		std::cin >> b;
+		std::cout << "Geben Sie die z Koordinate ein";
+		std::cin >> c;
+		Loop *l = heDS.getLoops().front();
+		Vertex* v = heDS.getVertices().front();
+		Edge* e = new Edge();
+		Vertex* v2 = new Vertex();
+		heDS.mev(*l, *v, *e, *v2, a, b, c);
+		glutPostRedisplay();
+		break;
 	}
 }
 
@@ -235,7 +250,8 @@ void selectNextLoop() {
 		activeHE = activeLoop->toHE;
 	}
 	else {
-		activeLoop = activeLoop->nextLoop;
+		activeLoop = heDS.getLoops().back();
+
 		activeHE = activeLoop->toHE;
 	}
 	glutPostRedisplay();

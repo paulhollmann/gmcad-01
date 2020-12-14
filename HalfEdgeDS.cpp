@@ -102,14 +102,8 @@ void HalfEdgeDS::createDefaultObject()
 	mel(*l1, *v1, *v3, *e4, *l2);
 	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
 
-	//------- Creating inner Edges --------//
-	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
-	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
-	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
-	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
-	mel(*l2, *v12, *v9, *e14, *l4);
-
-	kemh(*v1, *v9, *l2, *l5, *e10);
+	
+	
 
 	
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
@@ -118,11 +112,21 @@ void HalfEdgeDS::createDefaultObject()
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 
 	mel(*l1, *v5, *v6, *e9, *l3);
-	
+
+	//------- Creating inner Edges --------//
+
+	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
+	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
+	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
+	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
+	mel(*l2, *v12, *v9, *e14, *l4);
+
+	kemh(*v1, *v9, *l2, *l5, *e10);
+
 	/// check datastructure topology
 	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
 	if (!checkHalfEdges()) std::cout << "WARN: checkHalfEdges NOT valid! (blame the programmer)" << std::endl;
-	//if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
+	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
 	if (!checkVertices()) std::cout << "WARN: checkVertices NOT valid! (blame the programmer)" << std::endl;
 	
 	// TODO: Create a new VALID test object including all topological elements and linkage. The object should be volumetric and consist of at least one hole (H > 0).
@@ -438,7 +442,13 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 {
 
 	// Get next HalfEdge of the Edge which will deleted
-	HalfEdge* he1 = E1.he1->nextHE;
+	
+	HalfEdge* he1 = E1.he1;
+	if (he1->startV != &V1) {
+		he1 = E1.he2;
+	}
+
+	he1 = he1->nextHE;
 	// Add Edge to loop L2
 	he1->toLoop = &L2;
 	L2.toHE = he1;
@@ -450,12 +460,21 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 		he->toLoop = &L2;
 		if (he->nextHE->startV == &V2) {
 			he->nextHE = he1;
+			he1->prevHE = he;
 		}
 		he = he->nextHE;
 	}
 	
 	// Close Loop L1
-	E1.he1->prevHE->nextHE = E1.he2->nextHE;
+	if (E1.he1->startV == &V1) {
+		E1.he1->prevHE->nextHE = E1.he2->nextHE;
+		E1.he2->nextHE->prevHE = E1.he1->prevHE;
+	}
+	else {
+		E1.he2->prevHE->nextHE = E1.he1->nextHE;
+		E1.he1->nextHE->prevHE = E1.he2->prevHE;
+	}
+	
 
 
 	std::cout << "Ausgehende Edge " << &V1.outgoingHE << " Eingehende Edge " << V1.getInboundHE(&L1) << std::endl;
@@ -465,8 +484,9 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	halfEdges.remove(E1.he1);
 	halfEdges.remove(E1.he2);
 	//delete Edges
-	delete E1.he1;
-	delete E1.he2;
+
+	//delete E1.he1;
+	//delete E1.he2;
 	delete &E1;
 	// Push Loop in loop list
 	loops.push_back(&L2);
@@ -480,8 +500,18 @@ bool HalfEdgeDS::checkDS()
 	return checkVertices() && checkHalfEdges() && checkEdges();//&& checkLoops();
 }
 
+/*
+* Check Euler Poincare formula
+*/
+
 bool HalfEdgeDS::checkEulerPoincare()
 {
+	// Left side of formula
+	int V = getVertices().size();
+	int E = getEdges().size();
+	int F = getFaces().size();
+
+	// Right side of Formula
 	return false;
 }
 
