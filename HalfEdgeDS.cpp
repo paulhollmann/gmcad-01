@@ -118,13 +118,14 @@ void HalfEdgeDS::createDefaultObject()
 	//------- Creating inner Edges --------//
 
 	mev(*l2, *v1, *e10, *v9, 1.25f, 1.0f, 1.25f);
+
 	mev(*l2, *v9, *e11, *v10, 1.75f, 1.0f, 1.25f);
 	mev(*l2, *v10, *e12, *v11, 1.75f, 1.0f, 1.75f);
 	mev(*l2, *v11, *e13, *v12, 1.25f, 1.0f, 1.75f);
 	
-	//mel(*l2, *v9,*e10, *v12, *e13,  *e14, *l4);
+	mel(*l2, *v9,*e11, *e10, *v12, *e13, *e13, *e14, *l4);
 
-	//kemh(*v1, *v9, *l2, *l5, *e10);
+	kemh(*v1, *v9, *l2, *l5, *e10);
 	
 
 
@@ -374,7 +375,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	Edge* v1E = V1.getRandInboundHE(&L1)->toEdge;
 	Edge* v2E = V2.getRandInboundHE(&L1)->toEdge;
 	
-	this->mel(L1, V1, *v1E, V2, *v2E, E1, L2);
+	this->mel(L1, V1, *v1E, *v1E, V2, *v2E, *v2E, E1, L2);
 }
 
 
@@ -382,33 +383,49 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 * Make-Edge-Loop (Advanced)
 * Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
 * 
-*
 * @param L1 Loop which Edge E1 will close
 * @param V1 starting Vertex for Edge E3
-* @param E1 Edge on the (new) inner loop next to V1
+* @param E1inner Edge on the (new) inner loop next to V1
+* @param E1ounter Edge on the (existing) outer loop next to V1
 * @param V2 end Vertex for Edge E3
-* @param E2 Edge on the inner loop next to V2
+* @param E2inner Edge on the (new) inner loop next to V2
+* @param E2ounter Edge on the (existing) outer loop next to V2
 * @param E3 new Edge
 * @param L2 new Loop
 */
-void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, Edge& E2, Edge& E3, Loop& L2)
+void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex& V2, Edge& E2inner, Edge& E2outer, Edge& E3, Loop& L2)
 {
 	/// get necessary HalfEdges
 	HalfEdge* leftOutboundHE,* leftInboundHE,* rightOutboundHE,* rightInboundHE;
-	if (E1.he1->startV == &V1)
-		leftOutboundHE = E1.he1;
-	else if (E1.he2->startV == &V1)
-		leftOutboundHE = E1.he2;
+	if (E1inner.he1->startV == &V1)
+		leftOutboundHE = E1inner.he1;
+	else if (E1inner.he2->startV == &V1)
+		leftOutboundHE = E1inner.he2;
 	else
-		std::cout << "ERR: mel E1 not near V1";
-	leftInboundHE = leftOutboundHE->getConjugate();
-	if (E2.he1->startV == &V2)
-		rightOutboundHE = E2.he1;
-	else if (E2.he2->startV == &V2)
-		rightOutboundHE = E2.he2;
+		std::cout << "ERR: mel E1inner not near V1";
+
+	if (E1outer.he1->nextHE->startV == &V1)
+		leftInboundHE = E1outer.he1;
+	else if (E1outer.he2->nextHE->startV == &V1)
+		leftInboundHE = E1outer.he2;
 	else
-		std::cout << "ERR: mel E2 not near V2";
-	rightInboundHE = rightOutboundHE->getConjugate();
+		std::cout << "ERR: mel E1outer not near V1";
+
+
+	if (E2outer.he1->startV == &V2)
+		rightOutboundHE = E2outer.he1;
+	else if (E2outer.he2->startV == &V2)
+		rightOutboundHE = E2outer.he2;
+	else
+		std::cout << "ERR: mel E2outer not near V2";
+
+	if (E2inner.he1->nextHE->startV == &V2)
+		rightInboundHE = E2inner.he1;
+	else if (E2inner.he2->nextHE->startV == &V2)
+		rightInboundHE = E2inner.he2;
+	else
+		std::cout << "ERR: mel E2outer not near V2";
+
 
 	/// Create new HalfEdges for new Edge
 	HalfEdge* he1 = new HalfEdge();
@@ -431,10 +448,10 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, Edge& E2, Edge&
 	he2->toLoop = &L2;
 
 	/// set new Loop for HalfEdges succesive to he2
-	HalfEdge* he = he1->nextHE;
-	while (he != he1)
+	HalfEdge* he = he2->nextHE;
+	while (he != he2)
 	{
-		he->toLoop = &L1;
+		he->toLoop = &L2;
 		he = he->nextHE;
 	}
 
