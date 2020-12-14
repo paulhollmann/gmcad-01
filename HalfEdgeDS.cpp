@@ -506,12 +506,22 @@ bool HalfEdgeDS::checkDS()
 
 bool HalfEdgeDS::checkEulerPoincare()
 {
+	/// V - E + F = 2 (S - R) + H
 	// Left side of formula
 	int V = getVertices().size();
 	int E = getEdges().size();
 	int F = getFaces().size();
 
 	// Right side of Formula
+	/// S: Number of Shells = 1 (no support for inner Shells)
+	int S = 1;
+
+	/// R: Number of Rings: "Volume breaktroughs"
+	int R = 0;
+
+	int H = V - E + F - 2 * (S - R);
+	/// H: Number of Holes
+	std::cout << "Existieren " << "H" << " Löcher? j/n";
 	return false;
 }
 
