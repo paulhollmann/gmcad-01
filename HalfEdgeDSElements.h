@@ -82,7 +82,9 @@ struct Vertex
 	Vec3f coordinates;		// stores the 3d coordinates of the vertex
 	Vertex();
 	// TODO: create methods for creating and traversing its elements
-	HalfEdge* getInboundHE(Loop* loop);
+	HalfEdge* getRandInboundHE(Loop* loop);
+
+	HalfEdge* getOutboundHE(Loop* loop);
 
 	//std::list<Edge*> getEdges();
 };

@@ -66,6 +66,7 @@ public:
 	void mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z);
 
 	void mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2);
+	void mel(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, Edge& E2, Edge& E3, Loop& L2);
 
 	void kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1);
 

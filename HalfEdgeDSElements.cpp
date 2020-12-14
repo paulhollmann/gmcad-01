@@ -98,7 +98,7 @@ Vertex::Vertex()
 * @return HalfEdge on loop starting at this vertex
 */
 
-HalfEdge* Vertex::getInboundHE(Loop* loop) {
+HalfEdge* Vertex::getRandInboundHE(Loop* loop) {
 	/// get any Halfedge of the Loop
 	HalfEdge* he = loop->toHE;
 	/// continue through loop until startvertex is this vertex
@@ -107,4 +107,15 @@ HalfEdge* Vertex::getInboundHE(Loop* loop) {
 		he = he->nextHE;
 	}
 	return he->prevHE;
+}
+
+HalfEdge* Vertex::getOutboundHE(Loop* loop) {
+	/// get any Halfedge of the Loop
+	HalfEdge* he = loop->toHE;
+	/// continue through loop until startvertex is this vertex
+	while (he->startV != this)
+	{
+		he = he->nextHE;
+	}
+	return he;
 }
