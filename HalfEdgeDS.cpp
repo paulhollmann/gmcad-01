@@ -638,6 +638,7 @@ bool HalfEdgeDS::checkLoops()
 		int i = 0;
 		do 
 		{
+			if (he->toLoop != l) std::cout << "ERR: he" << he << " not on loop, but should be!" << std::endl;
 			if (he == nullptr) return false;
 			he = he->nextHE;
 			i++;
