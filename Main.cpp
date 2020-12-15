@@ -334,15 +334,11 @@ void selectConjugateHE() {
 void selectNextLoop() {
 	if (heDS.getLoops().size() == 0)
 		activeLoop = nullptr;
-	else if (activeLoop == nullptr) {
 	else if (activeLoop == nullptr || activeLoop == heDS.getLoops().back()) {
 		activeLoop = heDS.getLoops().front();
 		activeHE = activeLoop->toHE;
 	}
 	else {
-		activeLoop = heDS.getLoops().back();
-
-	}else {
 		const Loop* lastLoop = nullptr;
 		for (const Loop* l : heDS.getLoops())
 		{

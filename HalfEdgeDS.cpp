@@ -442,7 +442,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	edges.push_back(&E1);
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
-	loops.push_back(&L1);
+	loops.push_back(&L2);
 
 }
 
