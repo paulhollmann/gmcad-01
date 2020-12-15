@@ -176,7 +176,10 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'n':
 		selectNextHE();
 		break;
-		/// by pressing n traverse the data structure by previous HalfEdge
+	/// by pressing N skip through the building process of the Solid
+	case 'N':
+		heDS.createDefaultObject();
+		break;
 	case 'p':
 		selectPreviousHE();
 		break;
