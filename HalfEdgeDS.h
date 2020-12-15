@@ -82,6 +82,7 @@ private:
 	bool checkHalfEdges();
 	bool checkEdges();
 	bool checkLoops();
+	bool checkFaces();
 
 };
 

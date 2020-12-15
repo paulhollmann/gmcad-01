@@ -140,7 +140,8 @@ void HalfEdgeDS::createDefaultObject()
 	
 
 
-	/// check datastructure topology
+	/// check datastructure correctness
+	if (!checkFaces()) std::cout << "WARN: checkFaces NOT valid! (blame the programmer)" << std::endl;
 	if (!checkEdges()) std::cout << "WARN: checkEdges NOT valid! (blame the programmer)" << std::endl;
 	if (!checkHalfEdges()) std::cout << "WARN: checkHalfEdges NOT valid! (blame the programmer)" << std::endl;
 	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
@@ -402,6 +403,9 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	he1->startV = &V1;
 	he2->startV = &V2;
 
+	V1.outgoingHE = he1;
+	V2.outgoingHE = he2;
+
 	he1->toEdge = &E1;
 	he2->toEdge = &E1;
 
@@ -430,12 +434,17 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	startHe->prevHE = he1;
 	he1->nextHE = startHe;
 
+	
+	Face* f2 = new Face();
+	f2->outerLoop = &L2;
+	L2.toFace = f2;
+
 
 	edges.push_back(&E1);
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
 	loops.push_back(&L2);
-
+	faces.push_back(f2);
 }
 
 
@@ -491,8 +500,6 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 		L1.toHE = E1.he2->prevHE->nextHE;
 	}
 
-	std::cout << "Ausgehende Edge " << &V1.outgoingHE << " Eingehende Edge " << V1.getRandInboundHE(&L1) << std::endl;
-
 	// remove the Edge
 	edges.remove(&E1);	
 	// remove the HalfEdges of the Edge
@@ -504,8 +511,8 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	delete &E1;
 
 	//TODO
-	//L1.toFace->innerLoops.push_back(&L2);
-	//L2.toFace = L1.toFace;
+	L1.toFace->innerLoops.push_back(&L2);
+	L2.toFace = L1.toFace;
 
 	loops.push_back(&L2);
 	}
@@ -553,6 +560,7 @@ bool HalfEdgeDS::checkVertices()
 	for (Vertex* v : vertices) 
 	{
 		if (v->outgoingHE == nullptr) return false;
+		if (v->outgoingHE->startV != v) return false;
 	}
 	return true;
 }
@@ -605,9 +613,28 @@ bool HalfEdgeDS::checkLoops()
 			if (he == nullptr) return false;
 			he = he->nextHE;
 			i++;
-			if (i > 1000) return false;
+			if (i > 10000) return false;
 		} 
 		while (he != l->toHE);
+		if (l->toFace == nullptr) return false;
+	}
+	return true;
+}
+
+bool HalfEdgeDS::checkFaces() {
+	for (Face* f : faces)
+	{
+		if (f->outerLoop == nullptr) std::cout << "ERR: f->outerLoop" <<  " == nullptr" << std::endl;
+		if (f->outerLoop == nullptr) return false;
+		if (f->outerLoop->toFace != f) std::cout << "ERR: f->outerLoop->toFace " << " == nullptr" << std::endl;
+		if (f->outerLoop->toFace != f) return false;
+		if (f->innerLoops.size() > 0)
+		{
+			for (Loop* il : f->innerLoops) {
+				if (il->toFace != f) std::cout << "ERR: innerloop->toFace" << il->toFace << " !=  " << f << std::endl;
+				if (il->toFace != f) return false;
+			}
+		}
 	}
 	return true;
 }
