@@ -370,11 +370,6 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 	edges.push_back(&E2);
 }
 
-
-
-
-
-
 /**
 * Make-Edge-Loop (Simple)
 * Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
@@ -499,10 +494,6 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 		L1.toHE = E1.he2->prevHE->nextHE;
 	}
 
-	
-	
-
-
 	std::cout << "Ausgehende Edge " << &V1.outgoingHE << " Eingehende Edge " << V1.getRandInboundHE(&L1) << std::endl;
 	// remove the Edge
 	edges.remove(&E1);	
@@ -543,12 +534,17 @@ bool HalfEdgeDS::checkEulerPoincare()
 	/// S: Number of Shells = 1 (no support for inner Shells)
 	int S = 1;
 
-	/// R: Number of Rings: "Volume breaktroughs"
-	int R = 0;
-
-	int H = V - E + F - 2 * (S - R);
 	/// H: Number of Holes
-	std::cout << "Existieren " << "H" << " L�cher? j/n";
+	int H = 0;
+	/// Run through all Faces and count inner loops
+	Face* f = getFaces().front();
+	//while ()
+	//	if (f->innerLoop != nullptr)
+
+
+	/// R: Number of Rings: "Volume breaktroughs"
+	int R = (- V + E - F + 2 * S + H)/2;
+	std::cout << "Existieren " << R << " Volumendurchbrüche? j/n";
 	return false;
 }
 

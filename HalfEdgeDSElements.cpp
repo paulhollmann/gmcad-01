@@ -88,7 +88,7 @@ Vertex::Vertex()
 	, coordinates(Vec3f())
 {
 }
-	
+
 // TODO: create methods for creating and traversing its elements
 
 /**
@@ -97,7 +97,6 @@ Vertex::Vertex()
 * @param loop where to search for HalfEdge 
 * @return HalfEdge on loop starting at this vertex
 */
-
 HalfEdge* Vertex::getRandInboundHE(Loop* loop) {
 	/// get any Halfedge of the Loop
 	HalfEdge* he = loop->toHE;
