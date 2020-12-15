@@ -271,10 +271,10 @@ void selectConjugateHE() {
 
 
 /*
-* Switch between different loops!! TODO
+* Switch between different loops
 */
-void selectNextLoop() {
-
+void selectNextLoop()
+{
 	//TODO
 	if (heDS.getLoops().size() == 0)
 		activeLoop = nullptr;
@@ -322,7 +322,9 @@ void selectNextFace()
 }
 
 
-
+/**
+* Run Euler Operations from console
+*/
 void selectEulerOp()
 {
 	if (activeHE == nullptr)
@@ -369,7 +371,7 @@ void selectEulerOp()
 	}
 	else if (strcmp(in.c_str(), "mel") == 0)
 	{
-
+		cout << "Geben Sie an, welchen Operator Sie ausführen möchten" << endl;
 	}
 	else if (strcmp(in.c_str(), "kemh") == 0)
 	{
