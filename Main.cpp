@@ -5,6 +5,7 @@
 #include <stdio.h>		// cout
 #include <iostream>		// cout
 #include <string>		// String
+#include <list>
 
 #include "HalfEdgeDSRendering.h"	// visualizing the data structure
 
@@ -334,12 +335,24 @@ void selectNextLoop() {
 	if (heDS.getLoops().size() == 0)
 		activeLoop = nullptr;
 	else if (activeLoop == nullptr) {
+	else if (activeLoop == nullptr || activeLoop == heDS.getLoops().back()) {
 		activeLoop = heDS.getLoops().front();
 		activeHE = activeLoop->toHE;
 	}
 	else {
 		activeLoop = heDS.getLoops().back();
 
+	}else {
+		const Loop* lastLoop = nullptr;
+		for (const Loop* l : heDS.getLoops())
+		{
+			if (lastLoop == activeLoop)
+			{
+				activeLoop = l;
+				break;
+			}
+			lastLoop = l;
+		}
 		activeHE = activeLoop->toHE;
 	}
 	glutPostRedisplay();
@@ -396,6 +409,7 @@ void coutHelp()
 	std::cout << "N: (N)ext half edge" << std::endl;
 	std::cout << "P: (P) half edge" << std::endl;
 	std::cout << "C: (C) half edge" << std::endl;
+	std::cout << "L: (L) next loop" << std::endl;
 	std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }
