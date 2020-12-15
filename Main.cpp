@@ -189,68 +189,7 @@ void keyPressed(unsigned char key, int x, int y)
 		selectNextLoop();
 		break;
 	case 'o':
-		if (activeHE == nullptr)
-		{
-			std::cout << "Waehlen Sie zunaechst einen Startpunkt" << std::endl;
-			break;
-		}
-		string in;
-		cout << "Geben Sie an, welchen Operator Sie ausführen möchten"  << endl;
-		cin >> in;
-		if (strcmp(in.c_str(),"mevvls") == 0)
-		{
-
-		}
-		else if (strcmp(in.c_str(),"mev") == 0)
-		{
-			float a, b, c;
-			std::cout << "Geben Sie die x Koordinate ein";
-			std::cin >> a;
-			std::cout << "Geben Sie die y Koordinate ein";
-			std::cin >> b;
-			std::cout << "Geben Sie die z Koordinate ein";
-			std::cin >> c;
-			Edge* e = new Edge();
-			Vertex* v2 = new Vertex();
-			heDS.mev(*activeHE->toLoop, *activeVE, *e, *v2, a, b, c);
-			glutPostRedisplay();
-			break;
-		}
-		else if (strcmp(in.c_str(), "mve") == 0)
-		{
-			float a, b, c;
-			std::cout << "Geben Sie die x Koordinate ein";
-			std::cin >> a;
-			std::cout << "Geben Sie die y Koordinate ein";
-			std::cin >> b;
-			std::cout << "Geben Sie die z Koordinate ein";
-			std::cin >> c;
-			Edge* e2 = new Edge();
-			Vertex* v2 = new Vertex();
-			heDS.mve(*activeHE->toEdge, *v2, *e2, a, b, c);
-			glutPostRedisplay();
-			break;
-		}
-		else if (strcmp(in.c_str(), "mel") == 0)
-		{
-
-		}
-		else if (strcmp(in.c_str(), "kemh") == 0)
-		{
-			Loop* l = new Loop();
-			activeHE = activeHE->nextHE;
-			glutPostRedisplay();
-			cout << "Aktive Loop" << activeHE->toLoop << endl;
-			cout << "Erstse Loop in der LIsten" << heDS.getLoops().front() << endl;
-			//heDS.kemh(*activeHE->prevHE->startV, *activeHE->prevHE->getConjugate()->startV, *activeHE->toLoop, *l, *activeHE->prevHE->toEdge);
-			//activeHE = activeHE->prevHE->getConjugate();
-			glutPostRedisplay();
-			break;
-		}
-		else {
-			cout << "Dies ist kein gueltiger Euler Operator." << endl;
-			break;
-		}
+		selectEulerOp();
 		break;
 	}
 }
@@ -327,11 +266,14 @@ void selectConjugateHE() {
 	glutPostRedisplay();
 }
 
+
+
 /*
-* Switch between different loops
-* NOTE: DOES NOT WORK AS INTENDED BY NOW
+* Switch between different loops!! TODO
 */
 void selectNextLoop() {
+
+	//TODO
 	if (heDS.getLoops().size() == 0)
 		activeLoop = nullptr;
 	else if (activeLoop == nullptr || activeLoop == heDS.getLoops().back()) {
@@ -354,6 +296,80 @@ void selectNextLoop() {
 	glutPostRedisplay();
 }
 
+
+
+void selectEulerOp()
+{
+	if (activeHE == nullptr)
+	{
+		std::cout << "Waehlen Sie zunaechst einen Startpunkt" << std::endl;
+		return;
+	}
+	string in;
+	cout << "Geben Sie an, welchen Operator Sie ausführen möchten" << endl;
+	cin >> in;
+	if (strcmp(in.c_str(), "mevvls") == 0)
+	{
+
+	}
+	else if (strcmp(in.c_str(), "mev") == 0)
+	{
+		float a, b, c;
+		std::cout << "Geben Sie die x Koordinate ein";
+		std::cin >> a;
+		std::cout << "Geben Sie die y Koordinate ein";
+		std::cin >> b;
+		std::cout << "Geben Sie die z Koordinate ein";
+		std::cin >> c;
+		Edge* e = new Edge();
+		Vertex* v2 = new Vertex();
+		heDS.mev(*activeHE->toLoop, *activeVE, *e, *v2, a, b, c);
+		glutPostRedisplay();
+		return;
+	}
+	else if (strcmp(in.c_str(), "mve") == 0)
+	{
+		float a, b, c;
+		std::cout << "Geben Sie die x Koordinate ein";
+		std::cin >> a;
+		std::cout << "Geben Sie die y Koordinate ein";
+		std::cin >> b;
+		std::cout << "Geben Sie die z Koordinate ein";
+		std::cin >> c;
+		Edge* e2 = new Edge();
+		Vertex* v2 = new Vertex();
+		heDS.mve(*activeHE->toEdge, *v2, *e2, a, b, c);
+		glutPostRedisplay();
+		return;
+	}
+	else if (strcmp(in.c_str(), "mel") == 0)
+	{
+
+	}
+	else if (strcmp(in.c_str(), "kemh") == 0)
+	{
+		Loop* l = new Loop();
+		activeHE = activeHE->nextHE;
+		glutPostRedisplay();
+		cout << "Aktive Loop" << activeHE->toLoop << endl;
+		cout << "Erstse Loop in der LIsten" << heDS.getLoops().front() << endl;
+		//heDS.kemh(*activeHE->prevHE->startV, *activeHE->prevHE->getConjugate()->startV, *activeHE->toLoop, *l, *activeHE->prevHE->toEdge);
+		//activeHE = activeHE->prevHE->getConjugate();
+		glutPostRedisplay();
+		return;
+	}
+	else {
+		cout << "Dies ist kein gueltiger Euler Operator." << endl;
+		return;
+	}
+}
+
+
+
+
+// ===============
+// === VARIOUS ===
+// ===============
 void mousePressed(int button, int state, int x, int y)
 {
 	mouseButton = button;
@@ -390,9 +406,6 @@ void mouseMoved(int x, int y)
 	mouseY = y;
 }
 
-// ===============
-// === VARIOUS ===
-// ===============
 
 void coutHelp()
 {
@@ -402,10 +415,13 @@ void coutHelp()
 	std::cout << "H: show this (H)elp file" << std::endl;
 	std::cout << "R: (R)eset view" << std::endl;
 	std::cout << "====== DS NAVIGATION =====" << std::endl;
-	std::cout << "N: (N)ext half edge" << std::endl;
-	std::cout << "P: (P) half edge" << std::endl;
-	std::cout << "C: (C) half edge" << std::endl;
-	std::cout << "L: (L) next loop" << std::endl;
+	std::cout << "N: Next half edge" << std::endl;
+	std::cout << "P: half edge" << std::endl;
+	std::cout << "C: (C) half edge?" << std::endl;
+	std::cout << "L: Next inner loop" << std::endl;
+	std::cout << "F: (F) next face" << std::endl;
+
+
 	std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }

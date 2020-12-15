@@ -75,4 +75,6 @@ void selectConjugateHE();
 
 void selectNextLoop();
 
+void selectEulerOp();
+
 void coutHelp();
