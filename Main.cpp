@@ -188,6 +188,9 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'l':
 		selectNextLoop();
 		break;
+	case 'f':
+		selectNextFace();
+		break;
 	case 'o':
 		selectEulerOp();
 		break;
@@ -292,6 +295,29 @@ void selectNextLoop() {
 			lastLoop = l;
 		}
 		activeHE = activeLoop->toHE;
+	}
+	glutPostRedisplay();
+}
+
+void selectNextFace()
+{
+
+	if (heDS.getFaces().size() == 0)
+		activeFace = nullptr;
+	else if (activeFace == nullptr || activeFace == heDS.getFaces().back()) {
+		activeFace = heDS.getFaces().front();
+	}
+	else {
+		const Face* lastFace = nullptr;
+		for (const Face* f : heDS.getFaces())
+		{
+			if (lastFace == activeFace)
+			{
+				activeFace = f;
+				break;
+			}
+			lastFace = f;
+		}
 	}
 	glutPostRedisplay();
 }

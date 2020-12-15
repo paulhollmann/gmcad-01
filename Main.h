@@ -24,6 +24,7 @@ HalfEdgeDS heDS;		// instance of our data structure
 Vertex* activeVE;
 HalfEdge* activeHE;		// the currently active half edge
 const Loop* activeLoop;
+const Face* activeFace;
 
 // do not modify data below unless you know what you do
 // camera Information
@@ -74,6 +75,8 @@ void selectPreviousHE();
 void selectConjugateHE();
 
 void selectNextLoop();
+
+void selectNextFace();
 
 void selectEulerOp();
 
