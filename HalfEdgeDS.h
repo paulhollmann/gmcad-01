@@ -84,6 +84,21 @@ private:
 	bool checkLoops();
 	bool checkFaces();
 
+	int* state;
+
+	/// Create Edges for test element
+	Edge* e1,* e2,* e3,* e4,* e5,* e6,* e7,* e8,* e9,* e10,* e11,* e12;
+	/// Create Vertices for test element
+	Vertex* v1,* v2,* v3,* v4,* v5,* v6,* v7,* v8;
+
+	Loop* l1,* l2,* l3,* l4,* l5,* l6;
+	Solid* s1;
+
+	// Test of MEKH
+	Edge* e13,* e14,* e15,* e16,* e17;
+	Vertex* v9,* v10,* v11,* v12,* v13,* v14,* v15,* v16;
+	Edge* e21,* e22,* e23,* e24,* e25,* e26,* e27,* e28;
+	Loop* l7,* l8,* l9,* l10,* l11,* l12;
 };
 
 // ostream << operator to print some info of the data structure

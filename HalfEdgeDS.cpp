@@ -42,77 +42,106 @@ void HalfEdgeDS::createDefaultObject()
 	halfEdges.push_back(he2);
 	edges.push_back(e);
 	*/
+	/// increase state for showcase purposes
+	if (this->state == nullptr)
+	{
+		state = 0;
+	}
+	else
+	{
+		state++;
+	}
+
+
 	/// Create Edges for test element
-	Edge* e1 = new Edge();
-	Edge* e2 = new Edge();
-	Edge* e3 = new Edge();
-	Edge* e4 = new Edge();
+	this->e1 = new Edge();
+	this->e2 = new Edge();
+	this->e3 = new Edge();
+	this->e4 = new Edge();
 
-	Edge* e5 = new Edge();
-	Edge* e6 = new Edge();
-	Edge* e7 = new Edge();
-	Edge* e8 = new Edge();
+	this->e5 = new Edge();
+	this->e6 = new Edge();
+	this->e7 = new Edge();
+	this->e8 = new Edge();
 
-	Edge* e9 = new Edge();
+	this->e9 = new Edge();
+	this->e10 = new Edge();
+	this->e11 = new Edge();
+	this->e12 = new Edge();
 
 	/// Create Vertices for test element
-	Vertex* v1 = new Vertex();
-	Vertex* v2 = new Vertex();
-	Vertex* v3 = new Vertex();
-	Vertex* v4 = new Vertex();
+	this->v1 = new Vertex();
+	this->v2 = new Vertex();
+	this->v3 = new Vertex();
+	this->v4 = new Vertex();
 
-	//---------- TEST OBJECTS FOR MEKH BEGIN----------------//
+	this->v5 = new Vertex();
+	this->v6 = new Vertex();
+	this->v7 = new Vertex();
+	this->v8 = new Vertex();
 
-	Edge* e10 = new Edge();
-	Edge* e11 = new Edge();
-	Edge* e12 = new Edge();
-	Edge* e13 = new Edge();
-	Edge* e14 = new Edge();
-	Edge* e15 = new Edge();
-	Edge* e16 = new Edge();
-	Edge* e17 = new Edge();
+	/// Create Vertices for inner element (MEKH)
+	this->e13 = new Edge();
+	this->e14 = new Edge();
+	this->e15 = new Edge();
+	this->e16 = new Edge();
+	this->e17 = new Edge();
 
-	Vertex* v9 = new Vertex();
-	Vertex* v10 = new Vertex();
-	Vertex* v11 = new Vertex();
-	Vertex* v12 = new Vertex();
+	this->v9 = new Vertex();
+	this->v10 = new Vertex();
+	this->v11 = new Vertex();
+	this->v12 = new Vertex();
 
+	this->v13 = new Vertex();
+	this->v14 = new Vertex();
+	this->v15 = new Vertex();
+	this->v16 = new Vertex();
+
+	this->e21 = new Edge();
+	this->e22 = new Edge();
+	this->e23 = new Edge();
+	this->e24 = new Edge();
+	this->e25 = new Edge();
+	this->e26 = new Edge();
+	this->e27 = new Edge();
+	this->e28 = new Edge();
 	
-	//---------- TEST OBJECTS FOR MEKH END----------------//
-
-	Vertex* v5 = new Vertex();
-	Vertex* v6 = new Vertex();
-	Vertex* v7 = new Vertex();
-	Vertex* v8 = new Vertex();
 
 	/// Create Loops for test element
-	Loop* l1 = new Loop();
-	Loop* l2 = new Loop();
+	// basic square
+	this->l1 = new Loop(); // conceptional outer Loop
+	this->l2 = new Loop();
 
-	Loop* l3 = new Loop(); 
-	Loop* l4 = new Loop();
-	Loop* l5 = new Loop();
-	Loop* l6 = new Loop();
-	Loop* l7 = new Loop();
-	Loop* l8 = new Loop();
-	Loop* l9 = new Loop();
+	// finish cube
+	this->l3 = new Loop();
+	this->l4 = new Loop();
+	this->l5 = new Loop();
+	this->l6 = new Loop();
+
+	// hole
+	this->l7 = new Loop();
+	this->l8 = new Loop();
+
+	this->l9 = new Loop();
+	this->l10 = new Loop();
+	this->l11 = new Loop();
+	this->l12 = new Loop();
 
 
 	/// Create Solids for test element
-	Solid* s1 = new Solid();
+	this->s1 = new Solid();
 	//Solid* s2 = new Solid();
 
 	/// Run Euler operations
 
-	//------- Creating a base square --------//
+	//------- Creating a base cube with inner object --------//
+	/*
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
 	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
 	mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
 	mel(*l1, *v4, *v1, *e4, *l2);
-	//smel(*l2, *v1, *v3, *e13, *l9);
-	//mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
-
-	//------- Creating upwards edges --------//
+	
+	// Creating upwards edges
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
@@ -120,25 +149,39 @@ void HalfEdgeDS::createDefaultObject()
 	
 	mel(*l1, *v5, *v6, *e9, *l3);
 	mel(*l1, *v6, *v7, *e10, *l4);
+	
 	mel(*l1, *v7, *v8, *e11, *l5);
+	
 	mel(*l1, *v8, *v5, *e12, *l6);
 	
-
-	
-	
-	//------- Creating inner Edges --------//
+	// Creating inner Edges
 	
 	mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
 	mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
 	mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
 	mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
 	mel(*l2, *v12, *v9, *e17, *l7);
-	
-	
 
 	kemh(*v1, *v9, *l2, *l8, *e13);
 	
+	mev(*l8, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
+	mev(*l8, *v10, *e22, *v14, 1.75f, 1.5f, 1.25f);
+	mev(*l8, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
+	mev(*l8, *v12, *e24, *v16, 1.25f, 1.5f, 1.75f);
 
+	mel(*l8, *v13, *v14, *e25, *l9);
+	mel(*l8, *v14, *v15, *e26, *l10);
+	mel(*l8, *v15, *v16, *e27, *l11);
+	mel(*l8, *v16, *v13, *e28, *l12);
+	*/
+
+	//------- Basic MVE Example --------//
+	
+	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
+	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
+	mel(*l1, *v1, *v3, *e3, *l2);
+	mve(*e3, *v4, *e4, 2.0f, 1.0f, 1.0f);
+	
 
 	/// check datastructure correctness
 	if (!checkFaces()) std::cout << "WARN: checkFaces NOT valid! (blame the programmer)" << std::endl;
@@ -347,7 +390,7 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 	leftHE2->startV = &V1;
 
 	/// set new outgoing HalfEdges for Vertices
-	leftV->outgoingHE = leftHE1; // ? nicht schon gesetzt?
+	//leftV->outgoingHE = leftHE1; // ? nicht schon gesetzt?
 	rightV->outgoingHE = rightHE2;
 
 	/// set parent Edge for new HalfEdges
