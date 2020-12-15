@@ -171,26 +171,26 @@ void HalfEdgeDS::buildDefaultObject()
 	case 8:
 		mel(*l2, *v12, *v9, *e17, *l7);
 		break;
-	case 11:
+	case 9:
 		kemh(*v1, *v9, *l2, *l8, *e13);
 		break;
-	case 12:
+	case 10:
 		mev(*l7, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
 
 		mev(*l7, *v10, *e22, *v14, 1.25f, 1.5f, 1.75f);
 		mev(*l7, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
 		mev(*l7, *v12, *e24, *v16, 1.75f, 1.5f, 1.25f);
 		break;
-	case 13:
+	case 11:
 		mel(*l7, *v13, *v14, *e25, *l9);
 		break;
-	case 14:
+	case 12:
 		mel(*l9, *v14, *v15, *e26, *l10);
 		break;
-	case 15:
+	case 13:
 		mel(*l10, *v16, *v15, *e27, *l11);
 		break;
-	case 16:
+	case 14:
 		mel(*l10, *v16, *v13, *e28, *l12);
 		break;
 	}
@@ -606,14 +606,23 @@ bool HalfEdgeDS::checkEulerPoincare()
 	/// H: Number of Holes
 	int H = 0;
 	/// Run through all Faces and count inner loops
-	Face* f = getFaces().front();
-	//while ()
-	//	if (f->innerLoop != nullptr)
-
+	for (Face* f : faces)
+	{
+		H += f->innerLoops.size();
+	}
+	//std::cout << " " << H << " inner Loops" << std::endl;
 
 	/// R: Number of Rings: "Volume breaktroughs"
 	int R = (- V + E - F + 2 * S + H)/2;
-	std::cout << "Existieren " << R << " Volumendurchbrüche? j/n";
+	std::cout << "Existieren " << R << " Volumendurchbrueche? j/n :" << std::endl;
+	std::string c;
+	std::cin >> c;
+	if (c == "j")
+		std::cout << "Dein Objekt ist topologisch korrekt." << std::endl;
+	else if (c == "n")
+		std::cout << "Dein Objekt ist nicht topologisch korrekt." << std::endl;
+	else 
+		std::cout << "Unerkannter Buchstabe. Bitte starte den Befehl neu und gib j oder n an." << std::endl;
 	return false;
 }
 
