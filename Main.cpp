@@ -206,22 +206,14 @@ void keyPressed(unsigned char key, int x, int y)
 void selectNextHE() {
 	/// if no HalfEdges are present set active to nullpointer
 	if (heDS.getHalfEdges().size() == 0)
-	{
 		activeHE = nullptr;
-	}
 	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
 	else if (activeHE == nullptr)
-	{
 		activeHE = heDS.getHalfEdges().front();
-		activeVE = activeHE->startV;
-	}
+	/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 	else 
-	{
-		/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 		activeHE = activeHE->nextHE;
-		activeVE = activeHE->startV;
-	}
-	std::cout << "activeHE=" << activeHE << std::endl;
+
 	glutPostRedisplay();
 }
 
@@ -231,22 +223,16 @@ void selectNextHE() {
 void selectPreviousHE() {
 	/// if no HalfEdges are present set active to nullpointer
 	if (heDS.getHalfEdges().size() == 0)
-	{
 		activeHE = nullptr;
-	}
+
 	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
 	else if (activeHE == nullptr)
-	{
 		activeHE = heDS.getHalfEdges().front();
-		activeVE = activeHE->startV;
-	}
+
+	/// set new active HalfEdge as previous HalfEdge of the active HalfEdge
 	else
-	{
-		/// set new active HalfEdge as previous HalfEdge of the active HalfEdge
 		activeHE = activeHE->prevHE;
-		activeVE = activeHE->startV;
-	}
-	std::cout << "activeHE=" << activeHE << std::endl;
+
 	glutPostRedisplay();
 }
 
@@ -255,20 +241,21 @@ void selectPreviousHE() {
 */
 void selectConjugateHE() {
 	/// if no HalfEdges are present set active to nullpointer
-	if (heDS.getHalfEdges().size() == 0) {
+	if (heDS.getHalfEdges().size() == 0) 
 		activeHE = nullptr;
-	}
+
 	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active 
-	else if (activeHE == nullptr) {
+	else if (activeHE == nullptr) 
 		activeHE = heDS.getHalfEdges().front();
-		activeVE = activeHE->startV;
-	}
+
 	/// set new active HalfEdge as conjugate HalfEdge of the active HalfEdge
-	else {
+	else
 		activeHE = activeHE->getConjugate();
-		activeVE = activeHE->startV;
+
+	if (activeHE != nullptr) {
+		activeLoop = activeHE->toLoop;
+		activeFace = activeLoop->toFace;
 	}
-	std::cout << "activeHE=" << activeHE << std::endl;
 	glutPostRedisplay();
 }
 
@@ -280,23 +267,36 @@ void selectConjugateHE() {
 void selectNextLoop()
 {
 	//TODO
-	if (heDS.getLoops().size() == 0)
-		activeLoop = nullptr;
-	else if (activeLoop == nullptr || activeLoop == heDS.getLoops().back()) {
-		activeLoop = heDS.getLoops().front();
-		activeHE = activeLoop->toHE;
+	if (activeFace == nullptr)
+		cout << "No face selected! Please select a face first.";
+	else if (activeLoop == nullptr ) {
+		activeLoop = activeFace->outerLoop;
+	}
+	else if (activeFace->innerLoops.size() == 0) {
+		return;
+	}
+	else if(activeLoop == activeFace->innerLoops.back()) {
+		activeLoop = activeFace->outerLoop;
+	}
+	else if (activeLoop == activeFace->outerLoop)
+	{
+		activeLoop = activeFace->innerLoops.front();
 	}
 	else {
 		const Loop* lastLoop = nullptr;
-		for (const Loop* l : heDS.getLoops())
+		for (const Loop* innerloop : activeFace->innerLoops)
 		{
 			if (lastLoop == activeLoop)
 			{
-				activeLoop = l;
+				activeLoop = innerloop;
 				break;
 			}
-			lastLoop = l;
+			lastLoop = innerloop;
 		}
+	}
+
+	if (activeLoop != nullptr)
+	{
 		activeHE = activeLoop->toHE;
 	}
 	glutPostRedisplay();
@@ -304,7 +304,6 @@ void selectNextLoop()
 
 void selectNextFace()
 {
-
 	if (heDS.getFaces().size() == 0)
 		activeFace = nullptr;
 	else if (activeFace == nullptr || activeFace == heDS.getFaces().back()) {
@@ -322,6 +321,11 @@ void selectNextFace()
 			lastFace = f;
 		}
 	}
+	if (activeFace != nullptr) {
+		activeLoop = activeFace->outerLoop;
+		activeHE = activeLoop->toHE;
+	}
+
 	glutPostRedisplay();
 }
 
@@ -354,7 +358,7 @@ void selectEulerOp()
 		std::cin >> c;
 		Edge* e = new Edge();
 		Vertex* v2 = new Vertex();
-		heDS.mev(*activeHE->toLoop, *activeVE, *e, *v2, a, b, c);
+		heDS.mev(*activeHE->toLoop, *activeHE->startV, *e, *v2, a, b, c);
 		glutPostRedisplay();
 		return;
 	}

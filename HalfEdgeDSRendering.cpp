@@ -26,34 +26,72 @@ void renderDS(const HalfEdgeDS& heDS, const HalfEdge* activeHE, const Loop* acti
 		//filter activeLoop Edges
 		if (activeLoop != nullptr){
 			HalfEdge* he = activeLoop->toHE;
-			while (he != activeLoop->toHE) {
-			if (e->he1 == he || e->he2 == he) goto skip;
-			he = he->nextHE;
-			}
+			do {
+				if (e->he1 == he || e->he2 == he) goto skip;
+				he = he->nextHE;
+			} while (he != activeLoop->toHE);
+				
 		}
 
 		//filter activeFace Edges
 		if (activeFace != nullptr) {
 			for (Loop* innerL : activeFace->innerLoops) {
 				HalfEdge* he = innerL->toHE;
-				while (he != innerL->toHE) {
+				do {
 					if (e->he1 == he || e->he2 == he) goto skip;
 					he = he->nextHE;
-				}
+				} while (he != innerL->toHE);
+
 			}
 			HalfEdge* he = activeFace->outerLoop->toHE;
-			while (he != activeFace->outerLoop->toHE) {
+			do {
 				if (e->he1 == he || e->he2 == he) goto skip;
 				he = he->nextHE;
-			}
+			} while (he != activeFace->outerLoop->toHE);
+				
 		}
 		renderE(e);
 		skip:;
 	}
+	// draw the selected stuff
+	
+	if (activeLoop != nullptr) {
+		HalfEdge* he = activeLoop->toHE;
+		do {
+			renderE(he->toEdge, Vec3f(1, 1, 1));  
+			he = he->nextHE;
+		} while (he != activeLoop->toHE);		
+	}
 
+	if (activeFace != nullptr) {
+		if (activeFace->outerLoop != activeLoop) 
+		{
+			HalfEdge* he = activeFace->outerLoop->toHE;
+			do { 
+				renderE(he->toEdge, Vec3f(1, 1, 0)); 
+				he = he->nextHE; 
+			} while (he != activeFace->outerLoop->toHE);
+		}
+	
+				
+		else
+			for (Loop* l : activeFace->innerLoops)
+			{
+				if (l == activeLoop) continue;
+				HalfEdge* he = l->toHE;
+				do {
+					renderE(he->toEdge, Vec3f(1, 1, 0));
+					he = he->nextHE;
+				} while (he != l->toHE);
 
-	// TODO draw the selected stuff
+			}
+	}
+	if (activeHE != nullptr) renderHEActive(activeHE);
+
+	
+	
 }
+
 
 /**
 * Render the Edge with given color-Vector

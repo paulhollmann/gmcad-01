@@ -21,7 +21,6 @@
 // ===================
 
 HalfEdgeDS heDS;		// instance of our data structure
-Vertex* activeVE;
 HalfEdge* activeHE;		// the currently active half edge
 const Loop* activeLoop;
 const Face* activeFace;
