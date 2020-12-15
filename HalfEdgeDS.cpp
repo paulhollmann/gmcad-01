@@ -130,10 +130,9 @@ void HalfEdgeDS::buildDefaultObject()
 		this->l11 = new Loop();
 		this->l12 = new Loop();
 
-
 		/// Create Solids for test element
 		s1 = new Solid();
-		//Solid* s2 = new Solid();
+
 		break;
 	case 1:
 		mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
@@ -169,14 +168,16 @@ void HalfEdgeDS::buildDefaultObject()
 		mev(*l2, *v11, *e16, *v12, 1.75f, 1.0f, 1.25f);
 		break;
 	case 8:
+		// Closing inner loop
 		mel(*l2, *v12, *v9, *e17, *l7);
 		break;
 	case 9:
+		// Separate inner loop
 		kemh(*v1, *v9, *l2, *l8, *e13);
 		break;
 	case 10:
+		// Creating inner upwards edges
 		mev(*l7, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
-
 		mev(*l7, *v10, *e22, *v14, 1.25f, 1.5f, 1.75f);
 		mev(*l7, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
 		mev(*l7, *v12, *e24, *v16, 1.75f, 1.5f, 1.25f);
@@ -193,15 +194,28 @@ void HalfEdgeDS::buildDefaultObject()
 	case 14:
 		mel(*l10, *v16, *v13, *e28, *l12);
 		break;
+		
+		
+		/**/
+		/*
+
+		//------- Basic MVE Example --------//
+	case 1:
+		mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
+		break;
+	case 2:
+		mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
+		break;
+	case 3:
+		mel(*l1, *v1, *v3, *e3, *l2);
+		break;
+	case 4:
+		mve(*e3, *v4, *e4, 2.0f, 1.0f, 1.0f);
+		*/
 	}
 	std::cout << *this << std::endl;
-	//------- Basic MVE Example --------//
-	/*
-	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
-	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
-	mel(*l1, *v1, *v3, *e3, *l2);
-	mve(*e3, *v4, *e4, 2.0f, 1.0f, 1.0f);
-	*/
+	
+	
 
 	/// check datastructure correctness
 	if (!checkFaces()) std::cout << "WARN: checkFaces NOT valid! (blame the programmer)" << std::endl;
