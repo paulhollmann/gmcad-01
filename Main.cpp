@@ -197,6 +197,9 @@ void keyPressed(unsigned char key, int x, int y)
 	case 'o':
 		selectEulerOp();
 		break;
+	case 'e':
+		heDS.checkEulerPoincare();
+		break;
 	}
 }
 
