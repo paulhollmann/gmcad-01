@@ -69,6 +69,8 @@ void renderE(const Edge* e, const Vec3f& color /*= Vec3f(0.0f, 1.0f, 0.0f)*/)
 	// set the begin of the components for the Color
 	glColor3fv(&color.x);
 	/// define two vertices by their coordinates
+
+	// glVertex3f(e->he1->startV->coordinates.x, e->he1->startV->coordinates.y, e->he1->startV->coordinates.z);
 	glVertex3fv(&e->he1->startV->coordinates.x);
 	glVertex3fv(&e->he2->startV->coordinates.x);
 	/// first two Vertices will be grouped into a line
