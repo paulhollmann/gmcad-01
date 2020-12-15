@@ -210,9 +210,8 @@ void selectNextHE() {
 	/// if no HalfEdges are present set active to nullpointer
 	if (heDS.getHalfEdges().size() == 0)
 		activeHE = nullptr;
-	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
 	else if (activeHE == nullptr)
-		activeHE = heDS.getHalfEdges().front();
+		selectNextFace();
 	/// set new active HalfEdge as next HalfEdge of the active HalfEdge
 	else 
 		activeHE = activeHE->nextHE;
@@ -230,7 +229,7 @@ void selectPreviousHE() {
 
 	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active
 	else if (activeHE == nullptr)
-		activeHE = heDS.getHalfEdges().front();
+		selectNextFace();
 
 	/// set new active HalfEdge as previous HalfEdge of the active HalfEdge
 	else
@@ -243,18 +242,16 @@ void selectPreviousHE() {
 * Select conjugate HalfEdge as active
 */
 void selectConjugateHE() {
-	/// if no HalfEdges are present set active to nullpointer
-	if (heDS.getHalfEdges().size() == 0) 
+	if (heDS.getHalfEdges().size() == 0)
 		activeHE = nullptr;
 
-	/// if active HalfEdge is nullpointer, set first HalfEdge in list as active 
-	else if (activeHE == nullptr) 
-		activeHE = heDS.getHalfEdges().front();
+	else if (activeHE == nullptr)
+		selectNextFace();
 
-	/// set new active HalfEdge as conjugate HalfEdge of the active HalfEdge
 	else
 		activeHE = activeHE->getConjugate();
 
+	// faces and loops can change and need to be updated
 	if (activeHE != nullptr) {
 		activeLoop = activeHE->toLoop;
 		activeFace = activeLoop->toFace;
@@ -269,22 +266,21 @@ void selectConjugateHE() {
 */
 void selectNextLoop()
 {
-	//TODO
 	if (activeFace == nullptr)
 		cout << "No face selected! Please select a face first.";
-	else if (activeLoop == nullptr ) {
+
+	else if (activeLoop == nullptr ) 
 		activeLoop = activeFace->outerLoop;
-	}
-	else if (activeFace->innerLoops.size() == 0) {
+	
+	else if (activeFace->innerLoops.size() == 0) 
 		return;
-	}
-	else if(activeLoop == activeFace->innerLoops.back()) {
+
+	else if(activeLoop == activeFace->innerLoops.back()) 
 		activeLoop = activeFace->outerLoop;
-	}
+
 	else if (activeLoop == activeFace->outerLoop)
-	{
 		activeLoop = activeFace->innerLoops.front();
-	}
+
 	else {
 		const Loop* lastLoop = nullptr;
 		for (const Loop* innerloop : activeFace->innerLoops)
