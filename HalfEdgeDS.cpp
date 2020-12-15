@@ -95,6 +95,7 @@ void HalfEdgeDS::createDefaultObject()
 	Loop* l6 = new Loop();
 	Loop* l7 = new Loop();
 	Loop* l8 = new Loop();
+	Loop* l9 = new Loop();
 
 
 	/// Create Solids for test element
@@ -106,35 +107,37 @@ void HalfEdgeDS::createDefaultObject()
 	//------- Creating a base square --------//
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
 	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
-	mel(*l1, *v1, *v3, *e4, *l2);
-	mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
+	mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
+	mel(*l1, *v4, *v1, *e4, *l2);
+	//smel(*l2, *v1, *v3, *e13, *l9);
+	//mve(*e4, *v4, *e3, 2.0f, 1.0f, 1.0f);
 
 	//------- Creating upwards edges --------//
 	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
-
-	//------- Connecting edges to cube --------//
-	//mel(*l1, *v5, *v6, *e9, *l3);
+	
+	mel(*l1, *v5, *v6, *e9, *l3);
 	mel(*l1, *v6, *v7, *e10, *l4);
-	//mel(*l1, *v7, *v8, *e11, *l5);
-	//mel(*l1, *v8, *v5, *e12, *l6);
+	mel(*l1, *v7, *v8, *e11, *l5);
+	mel(*l1, *v8, *v5, *e12, *l6);
 	
 
 	
-
-	//------- Creating an inner Square in base --------//
-	/*
+	
+	//------- Creating inner Edges --------//
+	
 	mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
 	mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
 	mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
 	mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
+	mel(*l2, *v12, *v9, *e17, *l7);
 	
-	mel(*l2, *v9,*e14, *e13, *v12, *e16, *e16, *e17, *l7);
 	
-	//kemh(*v1, *v9, *l2, *l8, *e10);
-	*/
+
+	kemh(*v1, *v9, *l2, *l8, *e13);
+	
 
 
 	/// check datastructure topology
@@ -283,9 +286,7 @@ void HalfEdgeDS::mev(Loop& L1, Vertex& V1, Edge& E1, Vertex& V2, float x, float 
 	/// set parent Edge for new HalfEdges
 	he1->toEdge = &E1;
 	he2->toEdge = &E1;
-	///
-	L1.toHE = he1;
-	L1.toHE = he2;
+
 	/// set HalfEdges of new Edge
 	E1.he1 = he1;
 	E1.he2 = he2;
@@ -369,6 +370,11 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 	edges.push_back(&E2);
 }
 
+
+
+
+
+
 /**
 * Make-Edge-Loop (Simple)
 * Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
@@ -382,119 +388,64 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 */
 void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 {
-	Edge* v1Ei = V1.getRandInboundHE(&L1)->toEdge;
-	Edge* v1Eo = V1.getRandInboundHE(&L1)->nextHE->toEdge;
-	Edge* v2Ei = V2.getRandInboundHE(&L1)->toEdge;
-	Edge* v2Eo = V2.getRandInboundHE(&L1)->nextHE->toEdge;
-	this->mel(L1, V1, *v1Ei, *v1Eo, V2, *v2Ei, *v2Eo, E1, L2);
-}
+	/// Zur Start HE auf dem Loop traversieren
+	HalfEdge* startHe = L1.toHE;
+	while (startHe->startV != &V1) {
+		startHe = startHe->nextHE;
+	}
 
+	/// Start HE kopieren, um später zu bearbeiten
+	HalfEdge* connectionHE = startHe;
+	HalfEdge* backConnectionHE = startHe->prevHE;
 
-/**
-* Make-Edge-Loop (Advanced)
-* Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
-* 
-* @param L1 Loop which Edge E1 will close
-* @param V1 starting Vertex for Edge E3
-* @param E1inner Edge on the (new) inner loop next to V1
-* @param E1ounter Edge on the (existing) outer loop next to V1
-* @param V2 end Vertex for Edge E3
-* @param E2inner Edge on the (new) inner loop next to V2
-* @param E2ounter Edge on the (existing) outer loop next to V2
-* @param E3 new Edge
-* @param L2 new Loop
-*/
-void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex& V2, Edge& E2inner, Edge& E2outer, Edge& E3, Loop& L2)
-{
-	/// get necessary HalfEdges
-	HalfEdge* leftOutboundHE,* leftInboundHE,* rightOutboundHE,* rightInboundHE;
-	/// find he outbound to V1 on inner loop
-	if (E1inner.he1->startV == &V1)
-		leftOutboundHE = E1inner.he1;
-	else if (E1inner.he2->startV == &V1)
-		leftOutboundHE = E1inner.he2;
-	else
-		std::cout << "ERR: mel E1inner not near V1";
+	/// Alle Folgenden HE dem neuen Loop zuweisen
+	while (startHe->startV != &V2) {
+		startHe->toLoop = &L2;
+		startHe = startHe->nextHE;
+	}
 
-	/// find he inbound to V1 on outer loop
-	if (E1outer.he1->nextHE->startV == &V1)
-		leftInboundHE = E1outer.he1;
-	else if (E1outer.he2->nextHE->startV == &V1)
-		leftInboundHE = E1outer.he2;
-	else
-		std::cout << "ERR: mel E1outer not near V1";
-
-	/// find he outbound to V2 on outer loop
-	if (E2outer.he1->startV == &V2)
-		rightOutboundHE = E2outer.he1;
-	else if (E2outer.he2->startV == &V2)
-		rightOutboundHE = E2outer.he2;
-	else
-		std::cout << "ERR: mel E2outer not near V2";
-
-	/// find he inbound to V2 on inner loop
-	if (E2inner.he1->nextHE->startV == &V2)
-		rightInboundHE = E2inner.he1;
-	else if (E2inner.he2->nextHE->startV == &V2)
-		rightInboundHE = E2inner.he2;
-	else
-		std::cout << "ERR: mel E2outer not near V2";
-
-
-	/// Create new HalfEdges for new Edge
+	/// Neue und Halfedges von v1 nach v2 erstellen 
 	HalfEdge* he1 = new HalfEdge();
 	HalfEdge* he2 = new HalfEdge();
 
-	/// set connections on "clockwise" Loop
-	leftInboundHE->nextHE = he1;
-	he1->prevHE = leftInboundHE;
-	he1->nextHE = rightOutboundHE;
-	rightOutboundHE->prevHE = he1;
-
-	/// set connections on "counter-clockwise" Loop
-	rightInboundHE->nextHE = he2;
-	he2->prevHE = rightInboundHE;
-	he2->nextHE = leftOutboundHE;
-	leftOutboundHE->prevHE = he2;
-
-	/// set Loops for new HalfEdges
-	he1->toLoop = &L1;
-	he2->toLoop = &L2;
-
-	/// set new Loop for HalfEdges succesive to he2
-	HalfEdge* he = he2->nextHE;
-	while (he != he2)
-	{
-		he->toLoop = &L2;
-		he = he->nextHE;
-	}
-
-	/// set start Vertices for new HalfEdges
 	he1->startV = &V1;
 	he2->startV = &V2;
 
-	/// set parent Edge for new HalfEdges
-	he1->toEdge = &E3;
-	he2->toEdge = &E3;
+	he1->toEdge = &E1;
+	he2->toEdge = &E1;
 
-	/// set HalfEdges of new Edge
-	E3.he1 = he1;
-	E3.he2 = he2;
+	he1->toLoop = &L1;
+	he2->toLoop = &L2;
 
-	/// set any HalfEdge of Loop as reference to ensure the HalfEdge is on the Loop
+	/// Halfedges der Edge zuweisen
+	E1.he1 = he1;
+	E1.he2 = he2;
+
+	/// Sicherstellen, dass Loops mit HE verbunden sind
 	L1.toHE = he1;
 	L2.toHE = he2;
 
-	//handle faces
+	/// Kanten des inneren Loops verbinden und schließen
+	startHe->prevHE->nextHE = he2;
+	he2->prevHE = startHe->prevHE;
+	he2->nextHE = connectionHE;
+	connectionHE->prevHE = he2;
 
-	/// insert new HalfEdges, Edge and Loop at the end of the fields and increase size by one
+
+	/// Kanten des äußeren Loops verbinden und schließen
+
+	backConnectionHE->nextHE = he1;
+	he1->prevHE = backConnectionHE;
+	startHe->prevHE = he1;
+	he1->nextHE = startHe;
+
+	edges.push_back(&E1);
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
-	edges.push_back(&E3);
-	loops.push_back(&L2);
-	if (!checkLoops()) std::cout << "WARN: checkLoops NOT valid! (blame the programmer)" << std::endl;
+	loops.push_back(&L1);
 
 }
+
 
 /**
 * Kill-Edge-Make-Hole
