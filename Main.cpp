@@ -450,13 +450,12 @@ void coutHelp()
 	std::cout << "H: show this (H)elp file" << std::endl;
 	std::cout << "R: (R)eset view" << std::endl;
 	std::cout << "====== DS NAVIGATION =====" << std::endl;
-	std::cout << "N: Next half edge" << std::endl;
-	std::cout << "P: half edge" << std::endl;
+	std::cout << "N: (N)ext half edge" << std::endl;
+	std::cout << "P: (P)revious half edge" << std::endl;
 	std::cout << "C: (C) half edge?" << std::endl;
-	std::cout << "L: Next inner loop" << std::endl;
-	std::cout << "F: (F) next face" << std::endl;
-
-
+	std::cout << "L: Next inner (L)oop" << std::endl;
+	std::cout << "F: next (F)ace" << std::endl;
+	std::cout << "O: choose an euler (O)perator" << std::endl;
 	std::cout << "==========================" << std::endl;
 	std::cout << std::endl;
 }

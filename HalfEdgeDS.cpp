@@ -26,10 +26,7 @@ void HalfEdgeDS::buildDefaultObject()
 {
 	// WARNING: this example does NOT create a valid topology. It just creates the minimum elements to draw one line.
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
-
-	// create example elements.
-	/*
-	Vertex* v1 = new Vertex;
+	/*Vertex* v1 = new Vertex;
 	Vertex* v2 = new Vertex;
 	HalfEdge* he1 = new HalfEdge;
 	HalfEdge* he2 = new HalfEdge;
@@ -48,8 +45,8 @@ void HalfEdgeDS::buildDefaultObject()
 	vertices.push_back(v2);
 	halfEdges.push_back(he1);
 	halfEdges.push_back(he2);
-	edges.push_back(e);
-	*/
+	edges.push_back(e);*/
+
 	/// increase state for showcase purposes
 	state++;
 	
@@ -144,19 +141,21 @@ void HalfEdgeDS::buildDefaultObject()
 		mel(*l1, *v4, *v1, *e4, *l2);
 		break;
 	case 1:
+		
 		// Creating upwards edges
 		mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 		mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 		mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 		mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
-
+		break;
+	case 2:
 		mel(*l1, *v5, *v6, *e9, *l3);
 		mel(*l1, *v6, *v7, *e10, *l4);
-
 		mel(*l1, *v7, *v8, *e11, *l5);
 
 		mel(*l1, *v8, *v5, *e12, *l6);
-
+		break;
+	case 3:
 		// Creating inner Edges
 
 		mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
@@ -164,9 +163,11 @@ void HalfEdgeDS::buildDefaultObject()
 		mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
 		mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
 		mel(*l2, *v12, *v9, *e17, *l7);
-
+		break;
+	case 4:
 		kemh(*v1, *v9, *l2, *l8, *e13);
-
+		break;
+	case 5:
 		mev(*l8, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
 		mev(*l8, *v10, *e22, *v14, 1.75f, 1.5f, 1.25f);
 		mev(*l8, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
