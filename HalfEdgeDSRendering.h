@@ -14,13 +14,15 @@
 #include "HalfEdgeDS.h"
 
 // render the complete data structure with default colors
-void renderDS(const HalfEdgeDS& heDS, const HalfEdge* activeHE = nullptr);
+void renderDS(const HalfEdgeDS& heDS);
+
+void renderDS(const HalfEdgeDS& heDS, const HalfEdge* activeHE, const Loop* activeLoop, const Face* activeFace);
 
 // render one half edge
 void renderHE(const HalfEdge* he, const Vec3f& color = Vec3f(0.0f, 1.0f, 0.0f));
 
 // render one edge
-void renderE(const Edge* e, const HalfEdge* activeHE = nullptr, const Vec3f& color = Vec3f(0.0f, 1.0f, 0.0f));
+void renderE(const Edge* e, const Vec3f& color = Vec3f(0.0f, 1.0f, 0.0f));
 
 // render one vertex
 void renderV(const Vertex* v, const Vec3f& color = Vec3f(1.0f, 0.0f, 1.0f));
