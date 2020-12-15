@@ -6,7 +6,7 @@
 HalfEdgeDS::HalfEdgeDS()
 {
 	clearDS();
-	createDefaultObject();
+	buildDefaultObject();
 }	
 
 HalfEdgeDS::~HalfEdgeDS()
@@ -15,6 +15,14 @@ HalfEdgeDS::~HalfEdgeDS()
 }
 
 void HalfEdgeDS::createDefaultObject()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		buildDefaultObject();
+	}
+}
+
+void HalfEdgeDS::buildDefaultObject()
 {
 	// WARNING: this example does NOT create a valid topology. It just creates the minimum elements to draw one line.
 	// CARE: for every "new" we need a "delete". if an element is added to the according list, it is deleted automatically within clearDS().
@@ -43,145 +51,141 @@ void HalfEdgeDS::createDefaultObject()
 	edges.push_back(e);
 	*/
 	/// increase state for showcase purposes
-	if (this->state == nullptr)
-	{
-		state = 0;
-	}
-	else
-	{
-		state++;
-	}
-
-
-	/// Create Edges for test element
-	this->e1 = new Edge();
-	this->e2 = new Edge();
-	this->e3 = new Edge();
-	this->e4 = new Edge();
-
-	this->e5 = new Edge();
-	this->e6 = new Edge();
-	this->e7 = new Edge();
-	this->e8 = new Edge();
-
-	this->e9 = new Edge();
-	this->e10 = new Edge();
-	this->e11 = new Edge();
-	this->e12 = new Edge();
-
-	/// Create Vertices for test element
-	this->v1 = new Vertex();
-	this->v2 = new Vertex();
-	this->v3 = new Vertex();
-	this->v4 = new Vertex();
-
-	this->v5 = new Vertex();
-	this->v6 = new Vertex();
-	this->v7 = new Vertex();
-	this->v8 = new Vertex();
-
-	/// Create Vertices for inner element (MEKH)
-	this->e13 = new Edge();
-	this->e14 = new Edge();
-	this->e15 = new Edge();
-	this->e16 = new Edge();
-	this->e17 = new Edge();
-
-	this->v9 = new Vertex();
-	this->v10 = new Vertex();
-	this->v11 = new Vertex();
-	this->v12 = new Vertex();
-
-	this->v13 = new Vertex();
-	this->v14 = new Vertex();
-	this->v15 = new Vertex();
-	this->v16 = new Vertex();
-
-	this->e21 = new Edge();
-	this->e22 = new Edge();
-	this->e23 = new Edge();
-	this->e24 = new Edge();
-	this->e25 = new Edge();
-	this->e26 = new Edge();
-	this->e27 = new Edge();
-	this->e28 = new Edge();
+	state++;
 	
-
-	/// Create Loops for test element
-	// basic square
-	this->l1 = new Loop(); // conceptional outer Loop
-	this->l2 = new Loop();
-
-	// finish cube
-	this->l3 = new Loop();
-	this->l4 = new Loop();
-	this->l5 = new Loop();
-	this->l6 = new Loop();
-
-	// hole
-	this->l7 = new Loop();
-	this->l8 = new Loop();
-
-	this->l9 = new Loop();
-	this->l10 = new Loop();
-	this->l11 = new Loop();
-	this->l12 = new Loop();
-
-
-	/// Create Solids for test element
-	this->s1 = new Solid();
-	//Solid* s2 = new Solid();
-
 	/// Run Euler operations
 
 	//------- Creating a base cube with inner object --------//
-	/*
-	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
-	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
-	mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
-	mel(*l1, *v4, *v1, *e4, *l2);
 	
-	// Creating upwards edges
-	mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
-	mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
-	mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
-	mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
-	
-	mel(*l1, *v5, *v6, *e9, *l3);
-	mel(*l1, *v6, *v7, *e10, *l4);
-	
-	mel(*l1, *v7, *v8, *e11, *l5);
-	
-	mel(*l1, *v8, *v5, *e12, *l6);
-	
-	// Creating inner Edges
-	
-	mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
-	mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
-	mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
-	mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
-	mel(*l2, *v12, *v9, *e17, *l7);
+	switch (this->state) {
+	case 0:
+		/// Create Edges for test element
+		this->e1 = new Edge();
+		this->e2 = new Edge();
+		this->e3 = new Edge();
+		this->e4 = new Edge();
 
-	kemh(*v1, *v9, *l2, *l8, *e13);
-	
-	mev(*l8, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
-	mev(*l8, *v10, *e22, *v14, 1.75f, 1.5f, 1.25f);
-	mev(*l8, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
-	mev(*l8, *v12, *e24, *v16, 1.25f, 1.5f, 1.75f);
+		this->e5 = new Edge();
+		this->e6 = new Edge();
+		this->e7 = new Edge();
+		this->e8 = new Edge();
 
-	mel(*l8, *v13, *v14, *e25, *l9);
-	mel(*l8, *v14, *v15, *e26, *l10);
-	mel(*l8, *v15, *v16, *e27, *l11);
-	mel(*l8, *v16, *v13, *e28, *l12);
-	*/
+		this->e9 = new Edge();
+		this->e10 = new Edge();
+		this->e11 = new Edge();
+		this->e12 = new Edge();
+
+		/// Create Vertices for test element
+		this->v1 = new Vertex();
+		this->v2 = new Vertex();
+		this->v3 = new Vertex();
+		this->v4 = new Vertex();
+
+		this->v5 = new Vertex();
+		this->v6 = new Vertex();
+		this->v7 = new Vertex();
+		this->v8 = new Vertex();
+
+		/// Create Vertices for inner element (MEKH)
+		this->e13 = new Edge();
+		this->e14 = new Edge();
+		this->e15 = new Edge();
+		this->e16 = new Edge();
+		this->e17 = new Edge();
+
+		this->v9 = new Vertex();
+		this->v10 = new Vertex();
+		this->v11 = new Vertex();
+		this->v12 = new Vertex();
+
+		this->v13 = new Vertex();
+		this->v14 = new Vertex();
+		this->v15 = new Vertex();
+		this->v16 = new Vertex();
+
+		this->e21 = new Edge();
+		this->e22 = new Edge();
+		this->e23 = new Edge();
+		this->e24 = new Edge();
+		this->e25 = new Edge();
+		this->e26 = new Edge();
+		this->e27 = new Edge();
+		this->e28 = new Edge();
+
+
+		/// Create Loops for test element
+		// basic square
+		this->l1 = new Loop(); // conceptional outer Loop
+		this->l2 = new Loop();
+
+		// finish cube
+		this->l3 = new Loop();
+		this->l4 = new Loop();
+		this->l5 = new Loop();
+		this->l6 = new Loop();
+
+		// hole
+		this->l7 = new Loop();
+		this->l8 = new Loop();
+
+		this->l9 = new Loop();
+		this->l10 = new Loop();
+		this->l11 = new Loop();
+		this->l12 = new Loop();
+
+
+		/// Create Solids for test element
+		s1 = new Solid();
+		//Solid* s2 = new Solid();
+
+		mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
+		mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
+		mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
+		mel(*l1, *v4, *v1, *e4, *l2);
+		break;
+	case 1:
+		// Creating upwards edges
+		mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
+		mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
+		mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
+		mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
+
+		mel(*l1, *v5, *v6, *e9, *l3);
+		mel(*l1, *v6, *v7, *e10, *l4);
+
+		mel(*l1, *v7, *v8, *e11, *l5);
+
+		mel(*l1, *v8, *v5, *e12, *l6);
+
+		// Creating inner Edges
+
+		mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
+		mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
+		mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
+		mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
+		mel(*l2, *v12, *v9, *e17, *l7);
+
+		kemh(*v1, *v9, *l2, *l8, *e13);
+
+		mev(*l8, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
+		mev(*l8, *v10, *e22, *v14, 1.75f, 1.5f, 1.25f);
+		mev(*l8, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
+		mev(*l8, *v12, *e24, *v16, 1.25f, 1.5f, 1.75f);
+
+		mel(*l8, *v13, *v14, *e25, *l9);
+		mel(*l8, *v14, *v15, *e26, *l10);
+		mel(*l8, *v15, *v16, *e27, *l11);
+		mel(*l8, *v16, *v13, *e28, *l12);
+	}
+	
 
 	//------- Basic MVE Example --------//
-	
+	/*
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
 	mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
 	mel(*l1, *v1, *v3, *e3, *l2);
 	mve(*e3, *v4, *e4, 2.0f, 1.0f, 1.0f);
-	
+	*/
 
 	/// check datastructure correctness
 	if (!checkFaces()) std::cout << "WARN: checkFaces NOT valid! (blame the programmer)" << std::endl;

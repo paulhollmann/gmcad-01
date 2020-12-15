@@ -177,8 +177,9 @@ void keyPressed(unsigned char key, int x, int y)
 		selectNextHE();
 		break;
 	/// by pressing N skip through the building process of the Solid
-	case 'N':
-		heDS.createDefaultObject();
+	case '>':
+		heDS.buildDefaultObject();
+		glutPostRedisplay();
 		break;
 	case 'p':
 		selectPreviousHE();

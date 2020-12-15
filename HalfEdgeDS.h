@@ -44,6 +44,7 @@ public:
 
 	// creates a default example object
 	void createDefaultObject();
+	void buildDefaultObject();
 
 	// clears the data structure completely
 	void clearDS();
@@ -84,7 +85,7 @@ private:
 	bool checkLoops();
 	bool checkFaces();
 
-	int* state;
+	int state = -1;
 
 	/// Create Edges for test element
 	Edge* e1,* e2,* e3,* e4,* e5,* e6,* e7,* e8,* e9,* e10,* e11,* e12;
