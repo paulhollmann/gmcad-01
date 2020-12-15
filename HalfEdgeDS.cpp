@@ -134,52 +134,67 @@ void HalfEdgeDS::buildDefaultObject()
 		/// Create Solids for test element
 		s1 = new Solid();
 		//Solid* s2 = new Solid();
-
-		mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
-		mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
-		mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
-		mel(*l1, *v4, *v1, *e4, *l2);
 		break;
 	case 1:
-		
+		mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
+		break;
+	case 2:
+		mev(*l1, *v2, *e2, *v3, 2.0f, 1.0f, 2.0f);
+		break;
+	case 3:
+		mev(*l1, *v3, *e3, *v4, 2.0f, 1.0f, 1.0f);
+		break;
+	case 4:
+		mel(*l1, *v4, *v1, *e4, *l2);
+		//state = 6;
+		break;
+	case 5:
 		// Creating upwards edges
 		mev(*l1, *v1, *e5, *v5, 1.0f, 2.0f, 1.0f);
 		mev(*l1, *v2, *e6, *v6, 1.0f, 2.0f, 2.0f);
 		mev(*l1, *v3, *e7, *v7, 2.0f, 2.0f, 2.0f);
 		mev(*l1, *v4, *e8, *v8, 2.0f, 2.0f, 1.0f);
 		break;
-	case 2:
+	case 6:
 		mel(*l1, *v5, *v6, *e9, *l3);
 		mel(*l1, *v6, *v7, *e10, *l4);
 		mel(*l1, *v7, *v8, *e11, *l5);
-
 		mel(*l1, *v8, *v5, *e12, *l6);
 		break;
-	case 3:
+	case 7:
 		// Creating inner Edges
-
 		mev(*l2, *v1, *e13, *v9, 1.25f, 1.0f, 1.25f);
-		mev(*l2, *v9, *e14, *v10, 1.75f, 1.0f, 1.25f);
+		mev(*l2, *v9, *e14, *v10, 1.25f, 1.0f, 1.75f);
 		mev(*l2, *v10, *e15, *v11, 1.75f, 1.0f, 1.75f);
-		mev(*l2, *v11, *e16, *v12, 1.25f, 1.0f, 1.75f);
+		mev(*l2, *v11, *e16, *v12, 1.75f, 1.0f, 1.25f);
+		break;
+	case 8:
 		mel(*l2, *v12, *v9, *e17, *l7);
 		break;
-	case 4:
+	case 11:
 		kemh(*v1, *v9, *l2, *l8, *e13);
 		break;
-	case 5:
-		mev(*l8, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
-		mev(*l8, *v10, *e22, *v14, 1.75f, 1.5f, 1.25f);
-		mev(*l8, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
-		mev(*l8, *v12, *e24, *v16, 1.25f, 1.5f, 1.75f);
+	case 12:
+		mev(*l7, *v9, *e21, *v13, 1.25f, 1.5f, 1.25f);
 
-		mel(*l8, *v13, *v14, *e25, *l9);
-		mel(*l8, *v14, *v15, *e26, *l10);
-		mel(*l8, *v15, *v16, *e27, *l11);
-		mel(*l8, *v16, *v13, *e28, *l12);
+		mev(*l7, *v10, *e22, *v14, 1.25f, 1.5f, 1.75f);
+		mev(*l7, *v11, *e23, *v15, 1.75f, 1.5f, 1.75f);
+		mev(*l7, *v12, *e24, *v16, 1.75f, 1.5f, 1.25f);
+		break;
+	case 13:
+		mel(*l7, *v13, *v14, *e25, *l9);
+		break;
+	case 14:
+		mel(*l9, *v14, *v15, *e26, *l10);
+		break;
+	case 15:
+		mel(*l10, *v16, *v15, *e27, *l11);
+		break;
+	case 16:
+		mel(*l10, *v16, *v13, *e28, *l12);
+		break;
 	}
-	
-
+	std::cout << *this << std::endl;
 	//------- Basic MVE Example --------//
 	/*
 	mevvls(*e1, *v1, *v2, *l1, *s1, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f);
@@ -576,7 +591,6 @@ bool HalfEdgeDS::checkDS()
 /*
 * Check Euler Poincare formula
 */
-
 bool HalfEdgeDS::checkEulerPoincare()
 {
 	/// V - E + F = 2 (S - R) + H
