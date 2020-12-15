@@ -29,7 +29,7 @@ protected:
 	std::list<Solid*> solids;
 	std::list<Face*> faces;
 	std::list<Loop*> loops;
-	std::list<Loop*> innerLoops;
+	//std::list<Loop*> innerLoops;
 	std::list<Edge*> edges;
 	std::list<HalfEdge*> halfEdges;
 	std::list<Vertex*> vertices;
@@ -67,7 +67,6 @@ public:
 	void mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z);
 
 	void mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2);
-	void mel(Loop& L1, Vertex& V1, Edge& E1inner, Edge& E1outer, Vertex& V2, Edge& E2inner, Edge& E2outer, Edge& E3, Loop& L2);
 
 	void kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1);
 

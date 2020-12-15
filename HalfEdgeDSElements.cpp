@@ -19,7 +19,6 @@ Solid::Solid()
 Face::Face()
 	: toSolid(nullptr)
 	, outerLoop(nullptr)
-	, innerLoop(nullptr)
 {
 }
 	
@@ -30,8 +29,6 @@ Face::Face()
 */
 Loop::Loop()
 	: toFace(nullptr)
-	, nextLoop(nullptr)
-	, prevLoop(nullptr)
 	, toHE(nullptr)
 {
 }

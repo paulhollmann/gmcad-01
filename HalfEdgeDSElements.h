@@ -12,6 +12,7 @@
 #define HALF_EDGE_DS_ELEMENTS_H
 
 #include "Vec3.h"		// vector (x, y, z)
+#include <list>
 
 // forward declarations, so elements know each other when defined further below
 struct Solid;
@@ -34,9 +35,9 @@ struct Solid
 
 struct Face
 {
-	Solid* toSolid;			// back to the solid
-	Loop* outerLoop;		// to the boundary of the face
-	Loop* innerLoop;		// to a possible hole. Can be null_ptr. Multiple holes are accessible through innerLoop->nextLoop.
+	Solid* toSolid;					// back to the solid
+	Loop* outerLoop;				// to the boundary of the face
+	std::list<Loop*> innerLoops;	// to a possible hole. Can be null_ptr. Multiple holes are accessible through innerLoop->nextLoop.
 	Face();
 
 	// TODO: create methods for creating and traversing its elements
@@ -45,13 +46,10 @@ struct Face
 struct Loop
 {
 	Face* toFace;			// back to the face
-	Loop* nextLoop;			// next inner loop. cyclic: points to itself, if there is no other loop.
-	Loop* prevLoop;			// previous inner loop. cyclic: points to itself, if there is no other loop.
 	HalfEdge* toHE;			// can be any half edge of the loop
 	Loop();
+
 	// TODO: create methods for creating and traversing its elements
-	//std::list<Edge*> getEdges();
-	//std::list<Vertex*> getVertices();
 
 };
 

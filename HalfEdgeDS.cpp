@@ -217,14 +217,11 @@ void HalfEdgeDS::mevvls(Edge& E1, Vertex& V1, Vertex& V2, Loop& L1, Solid& S1, f
 
 	/// set new Loop
 	L1.toFace = f1;
-	L1.prevLoop = &L1;
-	L1.nextLoop = &L1;
 	L1.toHE = he1; // choose any HalfEdge
 	
 	/// set new Face
 	f1->toSolid = &S1;
 	f1->outerLoop = &L1;
-	f1->innerLoop = nullptr;
 
 	/// set new Solid
 	S1.toFace = f1;
@@ -371,9 +368,8 @@ void HalfEdgeDS::mve(Edge& E1, Vertex& V1, Edge& E2, float x, float y, float z)
 }
 
 /**
-* Make-Edge-Loop (Simple)
+* Make-Edge-Loop
 * Make an Edge E1 starting at Vertex V1 and ending at Vertex V2 which closes Loop L1 and make a new Loop L2 on the other side of Loop L1
-* NOTE: If one Vertex has more than 1 inbound edge on same Loop use the other overloaded function!
 *
 * @param L1 Loop which Edge E1 will close
 * @param V1 starting Vertex for Edge E1
@@ -433,6 +429,7 @@ void HalfEdgeDS::mel(Loop& L1, Vertex& V1, Vertex& V2, Edge& E1, Loop& L2)
 	he1->prevHE = backConnectionHE;
 	startHe->prevHE = he1;
 	he1->nextHE = startHe;
+
 
 	edges.push_back(&E1);
 	halfEdges.push_back(he1);
@@ -495,19 +492,22 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	}
 
 	std::cout << "Ausgehende Edge " << &V1.outgoingHE << " Eingehende Edge " << V1.getRandInboundHE(&L1) << std::endl;
+
 	// remove the Edge
 	edges.remove(&E1);	
 	// remove the HalfEdges of the Edge
 	halfEdges.remove(E1.he1);
 	halfEdges.remove(E1.he2);
 	//delete Edges
-
-	//delete E1.he1;
-	//delete E1.he2;
+	delete E1.he1;
+	delete E1.he2;
 	delete &E1;
-	// Push Loop in loop list
+
+	//TODO
+	//L1.toFace->innerLoops.push_back(&L2);
+	//L2.toFace = L1.toFace;
+
 	loops.push_back(&L2);
-	innerLoops.push_back(&L2);
 	}
 
 /**
