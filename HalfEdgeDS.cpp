@@ -587,7 +587,7 @@ void HalfEdgeDS::kemh(Vertex& V1, Vertex& V2, Loop& L1, Loop& L2, Edge& E1)
 	delete E1.he2;
 	delete &E1;
 
-	//TODO
+	// the new loop is a inner loop of L1s face
 	L1.toFace->innerLoops.push_back(&L2);
 	L2.toFace = L1.toFace;
 
